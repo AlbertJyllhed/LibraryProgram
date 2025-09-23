@@ -100,7 +100,14 @@
 
         static void ReturnBook()
         {
-
+            Console.WriteLine("Vilken bok vill du lämna tillbaka?");
+            for (int i = 0; i < loanedBooks[currentUserIndex].Length; i++)
+            {
+                if (loanedBooks[currentUserIndex][i] > 0)
+                {
+                    Console.WriteLine($"{i + 1}. {books[i]}");
+                }
+            }
         }
 
 
