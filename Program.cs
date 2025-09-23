@@ -10,6 +10,12 @@
         {
             string[] usernamnes = ["Anna", "Bob", "Cecilia", "David", "Eva"];
             int[] pins = [1234, 2345, 3456, 4567, 5678];
+            int[][] loanedBooks = new int[usernamnes.Length][];
+            for (int i = 0; i < loanedBooks.Length; i++)
+            {
+                loanedBooks[i] = [0, 0, 0, 0, 0];
+            }
+
             bool loggedIn = false;
 
             Console.WriteLine("Välkommen till bibliotekets lånesystem!");
