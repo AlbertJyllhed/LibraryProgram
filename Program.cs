@@ -16,12 +16,13 @@
                 loanedBooks[i] = [0, 0, 0, 0, 0];
             }
 
-            bool loggedIn = false;
+            //used to keep track of which user is currently logged in
+            int currentUserIndex = -1;
 
             Console.WriteLine("Välkommen till bibliotekets lånesystem!");
 
             int tries = 0;
-            while (tries < 3 && !loggedIn)
+            while (tries < 3 && currentUserIndex < 0)
             {
                 Console.WriteLine("Skriv in ditt användarnamn:");
                 string? username = Console.ReadLine();
@@ -32,7 +33,7 @@
                 {
                     if (username == usernamnes[i] && pin == pins[i])
                     {
-                        loggedIn = true;
+                        currentUserIndex = i;
                         break;
                     }
                 }
@@ -40,7 +41,7 @@
                 tries++;
             }
 
-            if (loggedIn)
+            if (currentUserIndex > -1)
             {
                 DisplayMenu();
             }
@@ -49,6 +50,7 @@
 
         static void DisplayMenu()
         {
+            Console.Clear();
             Console.WriteLine("1. Visa böcker");
             Console.WriteLine("2. Låna bok");
             Console.WriteLine("3. Lämna tillbaka bok");
