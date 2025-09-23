@@ -20,14 +20,35 @@
 
             currentUserIndex = LogIn();
 
-            if (currentUserIndex > -1)
+            while (currentUserIndex > -1)
             {
-                DisplayMenu();
+                int input = DisplayMenu();
+                switch (input)
+                {
+                    case 1:
+                        ShowBooks();
+                        break;
+                    case 2:
+                        BorrowBook();
+                        break;
+                    case 3:
+                        ReturnBook();
+                        break;
+                    case 4:
+                        CheckBorrowedBooks();
+                        break;
+                    case 5:
+                        LogOut();
+                        break;
+                    default:
+                        Console.WriteLine("Felaktig inmatning, försök igen.");
+                        break;
+                }
             }
         }
 
 
-        static void DisplayMenu()
+        static int DisplayMenu()
         {
             Console.Clear();
             Console.WriteLine("1. Visa böcker");
@@ -37,28 +58,16 @@
             Console.WriteLine("5. Logga ut");
 
             int input = 0;
-            bool success = int.TryParse(Console.ReadLine(), out input);
-            switch (input)
+            while(!int.TryParse(Console.ReadLine(), out input))
             {
-                case 1:
-                    ShowBooks();
-                    break;
-                case 2:
-                    BorrowBook();
-                    break;
-                case 3:
-                    ReturnBook();
-                    break;
-                case 4:
-                    CheckBorrowedBooks();
-                    break;
-                case 5:
-                    LogOut();
-                    break;
-                default:
-                    Console.WriteLine("Felaktig inmatning, försök igen.");
-                    break;
+                Console.Clear();
+                Console.WriteLine("1. Visa böcker");
+                Console.WriteLine("2. Låna bok");
+                Console.WriteLine("3. Lämna tillbaka bok");
+                Console.WriteLine("4. Mina lån");
+                Console.WriteLine("5. Logga ut");
             }
+            return input;
         }
 
 
@@ -119,7 +128,7 @@
 
         static void LogOut()
         {
-
+            currentUserIndex = LogIn();
         }
     }
 }
