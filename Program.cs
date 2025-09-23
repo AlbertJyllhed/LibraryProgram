@@ -11,8 +11,10 @@
         //used to keep track of which user is currently logged in
         public static int currentUserIndex = -1;
 
+
         static void Main(string[] args)
         {
+            //initialize the loanedBooks array
             for (int i = 0; i < loanedBooks.Length; i++)
             {
                 loanedBooks[i] = [0, 0, 0, 0, 0];
@@ -23,6 +25,7 @@
             while (currentUserIndex > -1)
             {
                 int input = DisplayMenu();
+                Console.Clear();
                 switch (input)
                 {
                     case 1:
@@ -41,9 +44,12 @@
                         LogOut();
                         break;
                     default:
-                        Console.WriteLine("Felaktig inmatning, försök igen.");
+                        Console.WriteLine("Felaktig inmatning.");
                         break;
                 }
+
+                Console.WriteLine("\nTryck Enter för att återgå till huvudmenyn.");
+                Console.ReadKey();
             }
         }
 
@@ -57,23 +63,13 @@
             Console.WriteLine("4. Mina lån");
             Console.WriteLine("5. Logga ut");
 
-            int input = 0;
-            while(!int.TryParse(Console.ReadLine(), out input))
-            {
-                Console.Clear();
-                Console.WriteLine("1. Visa böcker");
-                Console.WriteLine("2. Låna bok");
-                Console.WriteLine("3. Lämna tillbaka bok");
-                Console.WriteLine("4. Mina lån");
-                Console.WriteLine("5. Logga ut");
-            }
-            return input;
+            return GetInputInt();
         }
 
 
         static void ShowBooks()
         {
-            for (int i = 0;i < books.Length; i++)
+            for (int i = 0; i < books.Length; i++)
             {
                 Console.WriteLine($"{i}: {books[i]}, Tillgängliga exemplar: {bookAmounts[i]}");
             }
@@ -82,7 +78,23 @@
 
         static void BorrowBook()
         {
+            Console.WriteLine("Vilken bok vill du låna?");
+            for (int i = 0; i < books.Length; i++)
+            {
+                Console.WriteLine($"{i + 1}. {books[i]}");
+            }
 
+            int input = GetInputInt() - 1;
+            if (bookAmounts[input] > 0)
+            {
+                loanedBooks[currentUserIndex][input] += 1;
+                bookAmounts[input] -= 1;
+                Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[input]}");
+            }
+            else
+            {
+                Console.WriteLine($"Det finns inga fler exemplar av {books[input]} att låna.");
+            }
         }
 
 
@@ -134,7 +146,20 @@
         static void LogOut()
         {
             Console.WriteLine($"{usernames[currentUserIndex]} loggas ut.");
+            Console.WriteLine("Tryck Enter för att fortsätta.");
+            Console.ReadKey();
             currentUserIndex = LogIn();
+        }
+
+
+        static int GetInputInt()
+        {
+            int input = 0;
+            while (!int.TryParse(Console.ReadLine(), out input))
+            {
+                Console.WriteLine($"Felaktig inmatning, försök igen.");
+            }
+            return input;
         }
     }
 }
