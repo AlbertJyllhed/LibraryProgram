@@ -5,9 +5,9 @@
         public static string[] books = ["Pride and Prejudice", "The Great Gatsby", "Moby-Dick", "Les Miserables", "Frankenstein"];
         public static int[] bookAmounts = [6, 8, 5, 10, 13];
 
-        public static string[] usernamnes = ["Anna", "Bob", "Cecilia", "David", "Eva"];
+        public static string[] usernames = ["Anna", "Bob", "Cecilia", "David", "Eva"];
         public static int[] pins = [1234, 2345, 3456, 4567, 5678];
-        public static int[][] loanedBooks = new int[usernamnes.Length][];
+        public static int[][] loanedBooks = new int[usernames.Length][];
         //used to keep track of which user is currently logged in
         public static int currentUserIndex = -1;
 
@@ -75,7 +75,7 @@
         {
             for (int i = 0;i < books.Length; i++)
             {
-                Console.WriteLine($"{i}: {books[i]}\nTillgängliga exemplar: {bookAmounts[i]}");
+                Console.WriteLine($"{i}: {books[i]}, Tillgängliga exemplar: {bookAmounts[i]}");
             }
         }
 
@@ -108,11 +108,16 @@
                 Console.WriteLine("Skriv in ditt användarnamn:");
                 string? username = Console.ReadLine();
                 Console.WriteLine("Skriv in din PIN-kod:");
-                int pin = int.Parse(Console.ReadLine());
-
-                for (int i = 0; i < usernamnes.Length; i++)
+                int pin = 0;
+                if (!int.TryParse(Console.ReadLine(), out pin))
                 {
-                    if (username == usernamnes[i] && pin == pins[i])
+                    tries++;
+                    continue;
+                }
+
+                for (int i = 0; i < usernames.Length; i++)
+                {
+                    if (username == usernames[i] && pin == pins[i])
                     {
                         userIndex = i;
                         return userIndex;
@@ -128,6 +133,7 @@
 
         static void LogOut()
         {
+            Console.WriteLine($"{usernames[currentUserIndex]} loggas ut.");
             currentUserIndex = LogIn();
         }
     }
