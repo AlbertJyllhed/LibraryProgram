@@ -108,18 +108,7 @@
             Console.WriteLine("1. Låna boken");
             if (GetInputInt() == 1)
             {
-                int availableBooks = bookAmounts[bookIndex] - loanedBooks[bookIndex];
-                if (availableBooks > 0)
-                {
-                    loanedBooks[bookIndex]++;
-                    userBookLoans[currentUserIndex][bookIndex]++;
-                    Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[bookIndex]}");
-                }
-                else
-                {
-                    Console.WriteLine($"Det finns inga fler exemplar av {books[bookIndex]} att låna.");
-                    return;
-                }
+                TryGetBook(bookIndex);
             }
         }
 
@@ -134,16 +123,7 @@
             }
 
             int input = GetInputInt() - 1;
-            if (bookAmounts[input] - loanedBooks[input] > 0)
-            {
-                loanedBooks[input]++;
-                userBookLoans[currentUserIndex][input]++;
-                Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[input]}");
-            }
-            else
-            {
-                Console.WriteLine($"Det finns inga fler exemplar av {books[input]} att låna.");
-            }
+            TryGetBook(input);
         }
 
 
@@ -205,6 +185,23 @@
             }
 
             return false;
+        }
+
+
+        //attempts to get a book from the library and give it to the current user
+        static void TryGetBook(int index)
+        {
+            int availableBooks = bookAmounts[index] - loanedBooks[index];
+            if (availableBooks > 0)
+            {
+                loanedBooks[index]++;
+                userBookLoans[currentUserIndex][index]++;
+                Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[index]}");
+            }
+            else
+            {
+                Console.WriteLine($"Det finns inga fler exemplar av {books[index]} att låna.");
+            }
         }
 
 
