@@ -128,12 +128,20 @@
         static void CheckBorrowedBooks()
         {
             Console.WriteLine($"{usernames[currentUserIndex]}s lån:");
+            int loans = 0;
             for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
             {
                 if (userBookLoans[currentUserIndex][i] > 0)
                 {
                     Console.WriteLine($"{books[i]}: {userBookLoans[currentUserIndex][i]} lånade");
+                    loans++;
                 }
+            }
+
+            if (loans == 0)
+            {
+                Console.Clear();
+                Console.WriteLine("Du har inga lånade böcker.");
             }
         }
 
