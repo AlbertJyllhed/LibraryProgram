@@ -17,11 +17,9 @@
 
         static void Main(string[] args)
         {
-            //initialize the userBookLoans array
-            for (int i = 0; i < userBookLoans.Length; i++)
-            {
-                userBookLoans[i] = [0, 0, 0, 0, 0];
-            }
+            //initialize both of the jagged arrays
+            InitializeJaggedArray(loanedBooks);
+            InitializeJaggedArray(userBookLoans);
 
             currentUserIndex = LogIn();
 
@@ -128,6 +126,7 @@
         }
 
 
+        //handles logging in to the library system
         static int LogIn()
         {
             int tries = 0, userIndex = -1;
@@ -161,6 +160,7 @@
         }
 
 
+        //displays a logout message and then takes the user back to the login screen
         static void LogOut()
         {
             Console.WriteLine($"{usernames[currentUserIndex]} loggas ut.");
@@ -170,6 +170,7 @@
         }
 
 
+        //reusable method for input
         static int GetInputInt()
         {
             int input = 0;
@@ -178,6 +179,17 @@
                 Console.WriteLine($"Felaktig inmatning, försök igen.");
             }
             return input;
+        }
+
+
+        static int[][] InitializeJaggedArray(int[][] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = [0, 0, 0, 0, 0];
+            }
+
+            return array;
         }
     }
 }
