@@ -4,20 +4,23 @@
     {
         public static string[] books = ["Pride and Prejudice", "The Great Gatsby", "Moby-Dick", "Les Miserables", "Frankenstein"];
         public static int[] bookAmounts = [6, 8, 5, 10, 13];
+        //keeps track of all the books the library has loaned out
+        public static int[][] loanedBooks = new int[books.Length][];
 
         public static string[] usernames = ["Anna", "Bob", "Cecilia", "David", "Eva"];
         public static int[] pins = [1234, 2345, 3456, 4567, 5678];
-        public static int[][] loanedBooks = new int[usernames.Length][];
+        //keeps track of all the books that the different users have in their possession
+        public static int[][] userBookLoans = new int[usernames.Length][];
         //used to keep track of which user is currently logged in
         public static int currentUserIndex = -1;
 
 
         static void Main(string[] args)
         {
-            //initialize the loanedBooks array
-            for (int i = 0; i < loanedBooks.Length; i++)
+            //initialize the userBookLoans array
+            for (int i = 0; i < userBookLoans.Length; i++)
             {
-                loanedBooks[i] = [0, 0, 0, 0, 0];
+                userBookLoans[i] = [0, 0, 0, 0, 0];
             }
 
             currentUserIndex = LogIn();
@@ -48,12 +51,13 @@
                         break;
                 }
 
-                Console.WriteLine("\nTryck Enter för att återgå till huvudmenyn.");
+                Console.WriteLine("\nTryck Enter för att gå till huvudmenyn.");
                 Console.ReadKey();
             }
         }
 
 
+        //writes out all the standard menu options and returns the user input
         static int DisplayMenu()
         {
             Console.Clear();
@@ -87,7 +91,7 @@
             int input = GetInputInt() - 1;
             if (bookAmounts[input] > 0)
             {
-                loanedBooks[currentUserIndex][input] += 1;
+                userBookLoans[currentUserIndex][input] += 1;
                 bookAmounts[input] -= 1;
                 Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[input]}");
             }
@@ -101,9 +105,9 @@
         static void ReturnBook()
         {
             Console.WriteLine("Vilken bok vill du lämna tillbaka?");
-            for (int i = 0; i < loanedBooks[currentUserIndex].Length; i++)
+            for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
             {
-                if (loanedBooks[currentUserIndex][i] > 0)
+                if (userBookLoans[currentUserIndex][i] > 0)
                 {
                     Console.WriteLine($"{i + 1}. {books[i]}");
                 }
@@ -113,7 +117,14 @@
 
         static void CheckBorrowedBooks()
         {
-
+            Console.WriteLine($"{usernames[currentUserIndex]}s lån:");
+            for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
+            {
+                if (userBookLoans[currentUserIndex][i] > 0)
+                {
+                    Console.WriteLine($"{books[i]}: {userBookLoans[currentUserIndex][i]} lånade");
+                }
+            }
         }
 
 
