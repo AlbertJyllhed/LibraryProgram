@@ -29,9 +29,9 @@ namespace LibraryProgram
 
             while (currentUserIndex > -1)
             {
-                int input = DisplayMenu();
+                DisplayMenu();
                 Console.Clear();
-                switch (input)
+                switch (GetInputInt())
                 {
                     case 1:
                         ShowBooks();
@@ -63,7 +63,7 @@ namespace LibraryProgram
 
 
         //writes out all the standard menu options and returns the user input
-        static int DisplayMenu()
+        static void DisplayMenu()
         {
             Console.Clear();
             Console.WriteLine("1. Visa böcker");
@@ -72,8 +72,6 @@ namespace LibraryProgram
             Console.WriteLine("4. Lämna tillbaka bok");
             Console.WriteLine("5. Mina lån");
             Console.WriteLine("6. Logga ut");
-
-            return GetInputInt();
         }
 
 
