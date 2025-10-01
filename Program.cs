@@ -5,7 +5,7 @@
         public static string[] books = ["Pride and Prejudice", "The Great Gatsby", "Moby-Dick", "Les Miserables", "Frankenstein"];
         public static int[] bookAmounts = [6, 8, 5, 10, 13];
         //keeps track of all the books the library has loaned out
-        public static int[][] loanedBooks = new int[books.Length][];
+        public static int[] loanedBooks = new int[books.Length];
 
         public static string[] usernames = ["Anna", "Bob", "Cecilia", "David", "Eva"];
         public static int[] pins = [1234, 2345, 3456, 4567, 5678];
@@ -17,9 +17,11 @@
 
         static void Main(string[] args)
         {
-            //initialize both of the jagged arrays
-            InitializeJaggedArray(loanedBooks);
-            InitializeJaggedArray(userBookLoans);
+            //initialize userBookLoans array
+            for (int i = 0; i < userBookLoans.Length; i++)
+            {
+                userBookLoans[i] = [0, 0, 0, 0, 0];
+            }
 
             currentUserIndex = LogIn();
 
@@ -73,7 +75,7 @@
         {
             for (int i = 0; i < books.Length; i++)
             {
-                int availableBooks = bookAmounts[i] - loanedBooks[i][i];
+                int availableBooks = bookAmounts[i] - loanedBooks[i];
                 Console.WriteLine($"{i}: {books[i]}, Tillgängliga exemplar: {bookAmounts[i]}");
             }
         }
@@ -90,7 +92,7 @@
             int input = GetInputInt() - 1;
             if (bookAmounts[input] > 0)
             {
-                loanedBooks[currentUserIndex][input]++;
+                loanedBooks[input]++;
                 userBookLoans[currentUserIndex][input]++;
                 Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[input]}");
             }
@@ -115,7 +117,7 @@
             int input = GetInputInt() - 1;
             if (userBookLoans[currentUserIndex][input] > 0)
             {
-                loanedBooks[currentUserIndex][input]--;
+                loanedBooks[input]--;
                 userBookLoans[currentUserIndex][input]--;
                 Console.WriteLine($"{usernames[currentUserIndex]} lämnar tillbaka en kopia av {books[input]}");
             }
@@ -188,17 +190,6 @@
                 Console.WriteLine($"Felaktig inmatning, försök igen.");
             }
             return input;
-        }
-
-
-        static int[][] InitializeJaggedArray(int[][] array)
-        {
-            for (int i = 0; i < array.Length; i++)
-            {
-                array[i] = [0, 0, 0, 0, 0];
-            }
-
-            return array;
         }
     }
 }
