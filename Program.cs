@@ -1,4 +1,6 @@
-﻿namespace LibraryProgram
+﻿using System;
+
+namespace LibraryProgram
 {
     internal class Program
     {
@@ -116,14 +118,25 @@
         static void BorrowBook()
         {
             Console.WriteLine("Vilken bok vill du låna?");
+            int availableBooks = 0;
             for (int i = 0; i < books.Length; i++)
             {
-                int availableBooks = bookAmounts[i] - loanedBooks[i];
+                availableBooks = bookAmounts[i] - loanedBooks[i];
                 Console.WriteLine($"{i + 1}. {books[i]}, Tillgängliga exemplar: {availableBooks}");
             }
 
             int input = GetInputInt() - 1;
-            TryGetBook(input);
+            availableBooks = bookAmounts[input] - loanedBooks[input];
+            if (availableBooks > 0)
+            {
+                loanedBooks[input]++;
+                userBookLoans[currentUserIndex][input]++;
+                Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[input]}");
+            }
+            else
+            {
+                Console.WriteLine($"Det finns inga fler exemplar av {books[input]} att låna.");
+            }
         }
 
 
@@ -185,23 +198,6 @@
             }
 
             return false;
-        }
-
-
-        //attempts to get a book from the library and give it to the current user
-        static void TryGetBook(int index)
-        {
-            int availableBooks = bookAmounts[index] - loanedBooks[index];
-            if (availableBooks > 0)
-            {
-                loanedBooks[index]++;
-                userBookLoans[currentUserIndex][index]++;
-                Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[index]}");
-            }
-            else
-            {
-                Console.WriteLine($"Det finns inga fler exemplar av {books[index]} att låna.");
-            }
         }
 
 
