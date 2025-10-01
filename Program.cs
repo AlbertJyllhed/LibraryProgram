@@ -90,6 +90,7 @@
             Console.WriteLine("Skriv en boktitel för att söka efter den.");
             string? input = Console.ReadLine();
             int bookIndex = -1;
+            //compares every book in the library to the user input to see if it exists
             for (int i = 0; i < books.Length; i++)
             {
                 if (books[i] == input)
@@ -98,17 +99,16 @@
                 }
             }
 
-            if (bookIndex < 0)
+            if (bookIndex >= 0)
             {
-                Console.WriteLine($"Kunde inte hitta någon bok med titeln {input}.");
-                return;
+                Console.WriteLine($"{books[bookIndex]} hittades på plats {bookIndex}");
+                int availableBooks = bookAmounts[bookIndex] - loanedBooks[bookIndex];
+                Console.WriteLine($"Det finns {availableBooks} exemplar att låna.");
             }
-
-            Console.WriteLine($"{books[bookIndex]} hittades på plats {bookIndex}");
-            Console.WriteLine("1. Låna boken");
-            if (GetInputInt() == 1)
+            else
             {
-                TryGetBook(bookIndex);
+                //if bookIndex is still -1 as declared the book was never found
+                Console.WriteLine($"Kunde inte hitta någon bok med titeln {input}.");
             }
         }
 
