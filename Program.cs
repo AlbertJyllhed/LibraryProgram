@@ -1,4 +1,6 @@
-﻿namespace LibraryProgram
+﻿using System;
+
+namespace LibraryProgram
 {
     internal class Program
     {
@@ -27,23 +29,26 @@
 
             while (currentUserIndex > -1)
             {
-                int input = DisplayMenu();
+                DisplayMenu();
                 Console.Clear();
-                switch (input)
+                switch (GetInputInt())
                 {
                     case 1:
                         ShowBooks();
                         break;
                     case 2:
-                        BorrowBook();
+                        SearchForBook();
                         break;
                     case 3:
-                        ReturnBook();
+                        BorrowBook();
                         break;
                     case 4:
-                        CheckBorrowedBooks();
+                        ReturnBook();
                         break;
                     case 5:
+                        CheckBorrowedBooks();
+                        break;
+                    case 6:
                         LogOut();
                         break;
                     default:
@@ -58,16 +63,15 @@
 
 
         //writes out all the standard menu options and returns the user input
-        static int DisplayMenu()
+        static void DisplayMenu()
         {
             Console.Clear();
             Console.WriteLine("1. Visa böcker");
-            Console.WriteLine("2. Låna bok");
-            Console.WriteLine("3. Lämna tillbaka bok");
-            Console.WriteLine("4. Mina lån");
-            Console.WriteLine("5. Logga ut");
-
-            return GetInputInt();
+            Console.WriteLine("2. Sök efter bok");
+            Console.WriteLine("3. Låna bok");
+            Console.WriteLine("4. Lämna tillbaka bok");
+            Console.WriteLine("5. Mina lån");
+            Console.WriteLine("6. Logga ut");
         }
 
 
@@ -81,17 +85,46 @@
         }
 
 
+        static void SearchForBook()
+        {
+            Console.WriteLine("Skriv en boktitel för att söka efter den.");
+            string? input = Console.ReadLine();
+            int bookIndex = -1;
+            //compares every book in the library to the user input to see if it exists
+            for (int i = 0; i < books.Length; i++)
+            {
+                if (books[i] == input)
+                {
+                    bookIndex = i;
+                }
+            }
+
+            if (bookIndex >= 0)
+            {
+                int availableBooks = bookAmounts[bookIndex] - loanedBooks[bookIndex];
+                Console.WriteLine($"{bookIndex + 1}: {books[bookIndex]}, Tillgängliga exemplar: {availableBooks}");
+            }
+            else
+            {
+                //if bookIndex is still -1 as declared the book was never found
+                Console.WriteLine($"Kunde inte hitta någon bok med titeln {input}.");
+            }
+        }
+
+
         static void BorrowBook()
         {
             Console.WriteLine("Vilken bok vill du låna?");
+            int availableBooks = 0;
             for (int i = 0; i < books.Length; i++)
             {
-                int availableBooks = bookAmounts[i] - loanedBooks[i];
+                availableBooks = bookAmounts[i] - loanedBooks[i];
                 Console.WriteLine($"{i + 1}. {books[i]}, Tillgängliga exemplar: {availableBooks}");
             }
 
             int input = GetInputInt() - 1;
-            if (bookAmounts[input] - loanedBooks[input] > 0)
+            availableBooks = bookAmounts[input] - loanedBooks[input];
+            if (availableBooks > 0)
             {
                 loanedBooks[input]++;
                 userBookLoans[currentUserIndex][input]++;
@@ -106,6 +139,12 @@
 
         static void ReturnBook()
         {
+            if (!HasBorrowedBooks())
+            {
+                Console.WriteLine("Du har inga lånade böcker.");
+                return;
+            }
+
             Console.WriteLine("Vilken bok vill du lämna tillbaka?");
             for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
             {
@@ -127,6 +166,12 @@
 
         static void CheckBorrowedBooks()
         {
+            if (!HasBorrowedBooks())
+            {
+                Console.WriteLine("Du har inga lånade böcker.");
+                return;
+            }
+
             Console.WriteLine($"{usernames[currentUserIndex]}s lån:");
             for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
             {
@@ -135,6 +180,21 @@
                     Console.WriteLine($"{books[i]}: {userBookLoans[currentUserIndex][i]} lånade");
                 }
             }
+        }
+
+
+        //checks if the current user has any borrowed books
+        static bool HasBorrowedBooks()
+        {
+            for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
+            {
+                if (userBookLoans[currentUserIndex][i] > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
 
