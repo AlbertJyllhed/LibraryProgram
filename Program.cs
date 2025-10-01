@@ -103,9 +103,8 @@ namespace LibraryProgram
 
             if (bookIndex >= 0)
             {
-                Console.WriteLine($"{books[bookIndex]} hittades på plats {bookIndex}");
                 int availableBooks = bookAmounts[bookIndex] - loanedBooks[bookIndex];
-                Console.WriteLine($"Det finns {availableBooks} exemplar att låna.");
+                Console.WriteLine($"{bookIndex + 1}: {books[bookIndex]}, Tillgängliga exemplar: {availableBooks}");
             }
             else
             {
