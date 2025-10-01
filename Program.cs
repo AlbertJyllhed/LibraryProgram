@@ -90,8 +90,8 @@
             int input = GetInputInt() - 1;
             if (bookAmounts[input] > 0)
             {
-                loanedBooks[currentUserIndex][input] += 1;
-                userBookLoans[currentUserIndex][input] += 1;
+                loanedBooks[currentUserIndex][input]++;
+                userBookLoans[currentUserIndex][input]++;
                 Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[input]}");
             }
             else
@@ -110,6 +110,14 @@
                 {
                     Console.WriteLine($"{i + 1}. {books[i]}");
                 }
+            }
+
+            int input = GetInputInt() - 1;
+            if (userBookLoans[currentUserIndex][input] > 0)
+            {
+                loanedBooks[currentUserIndex][input]--;
+                userBookLoans[currentUserIndex][input]--;
+                Console.WriteLine($"{usernames[currentUserIndex]} lämnar tillbaka en kopia av {books[input]}");
             }
         }
 
