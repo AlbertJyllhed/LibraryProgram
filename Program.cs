@@ -35,15 +35,18 @@
                         ShowBooks();
                         break;
                     case 2:
-                        BorrowBook();
+                        SearchForBook();
                         break;
                     case 3:
-                        ReturnBook();
+                        BorrowBook();
                         break;
                     case 4:
-                        CheckBorrowedBooks();
+                        ReturnBook();
                         break;
                     case 5:
+                        CheckBorrowedBooks();
+                        break;
+                    case 6:
                         LogOut();
                         break;
                     default:
@@ -62,10 +65,11 @@
         {
             Console.Clear();
             Console.WriteLine("1. Visa böcker");
-            Console.WriteLine("2. Låna bok");
-            Console.WriteLine("3. Lämna tillbaka bok");
-            Console.WriteLine("4. Mina lån");
-            Console.WriteLine("5. Logga ut");
+            Console.WriteLine("2. Sök efter bok");
+            Console.WriteLine("3. Låna bok");
+            Console.WriteLine("4. Lämna tillbaka bok");
+            Console.WriteLine("5. Mina lån");
+            Console.WriteLine("6. Logga ut");
 
             return GetInputInt();
         }
@@ -77,6 +81,45 @@
             {
                 int availableBooks = bookAmounts[i] - loanedBooks[i];
                 Console.WriteLine($"{i + 1}: {books[i]}, Tillgängliga exemplar: {availableBooks}");
+            }
+        }
+
+
+        static void SearchForBook()
+        {
+            Console.WriteLine("Skriv en boktitel för att söka efter den.");
+            string? input = Console.ReadLine();
+            int bookIndex = -1;
+            for (int i = 0; i < books.Length; i++)
+            {
+                if (books[i] == input)
+                {
+                    bookIndex = i;
+                }
+            }
+
+            if (bookIndex < 0)
+            {
+                Console.WriteLine($"Kunde inte hitta någon bok med titeln {input}.");
+                return;
+            }
+
+            Console.WriteLine($"{books[bookIndex]} hittades på plats {bookIndex}");
+            Console.WriteLine("1. Låna boken");
+            if (GetInputInt() == 1)
+            {
+                int availableBooks = bookAmounts[bookIndex] - loanedBooks[bookIndex];
+                if (availableBooks > 0)
+                {
+                    loanedBooks[bookIndex]++;
+                    userBookLoans[currentUserIndex][bookIndex]++;
+                    Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[bookIndex]}");
+                }
+                else
+                {
+                    Console.WriteLine($"Det finns inga fler exemplar av {books[bookIndex]} att låna.");
+                    return;
+                }
             }
         }
 
