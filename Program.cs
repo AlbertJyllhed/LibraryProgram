@@ -73,6 +73,7 @@
         {
             for (int i = 0; i < books.Length; i++)
             {
+                int availableBooks = bookAmounts[i] - loanedBooks[i][i];
                 Console.WriteLine($"{i}: {books[i]}, Tillgängliga exemplar: {bookAmounts[i]}");
             }
         }
@@ -83,14 +84,14 @@
             Console.WriteLine("Vilken bok vill du låna?");
             for (int i = 0; i < books.Length; i++)
             {
-                Console.WriteLine($"{i + 1}. {books[i]}");
+                Console.WriteLine($"{i + 1}. {books[i]}, Tillgängliga exemplar: {bookAmounts[i]}");
             }
 
             int input = GetInputInt() - 1;
             if (bookAmounts[input] > 0)
             {
+                loanedBooks[currentUserIndex][input] += 1;
                 userBookLoans[currentUserIndex][input] += 1;
-                bookAmounts[input] -= 1;
                 Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[input]}");
             }
             else
