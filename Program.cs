@@ -106,6 +106,12 @@
 
         static void ReturnBook()
         {
+            if (!HasBorrowedBooks())
+            {
+                Console.WriteLine("Du har inga lånade böcker.");
+                return;
+            }
+
             Console.WriteLine("Vilken bok vill du lämna tillbaka?");
             for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
             {
@@ -127,22 +133,35 @@
 
         static void CheckBorrowedBooks()
         {
+            if (!HasBorrowedBooks())
+            {
+                Console.WriteLine("Du har inga lånade böcker.");
+                return;
+            }
+
             Console.WriteLine($"{usernames[currentUserIndex]}s lån:");
-            int loans = 0;
             for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
             {
                 if (userBookLoans[currentUserIndex][i] > 0)
                 {
                     Console.WriteLine($"{books[i]}: {userBookLoans[currentUserIndex][i]} lånade");
-                    loans++;
+                }
+            }
+        }
+
+
+        //checks if the current user has any borrowed books
+        static bool HasBorrowedBooks()
+        {
+            for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
+            {
+                if (userBookLoans[currentUserIndex][i] > 0)
+                {
+                    return true;
                 }
             }
 
-            if (loans == 0)
-            {
-                Console.Clear();
-                Console.WriteLine("Du har inga lånade böcker.");
-            }
+            return false;
         }
 
 
