@@ -242,6 +242,12 @@ namespace LibraryProgram
         }
 
 
+        static void AddBook()
+        {
+            string? newBook = Console.ReadLine();
+        }
+
+
         //reusable method for input
         static int GetInputInt()
         {
