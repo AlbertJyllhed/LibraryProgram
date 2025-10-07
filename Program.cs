@@ -29,9 +29,9 @@ namespace LibraryProgram
 
             while (currentUserIndex > -1)
             {
-                DisplayMenu();
+                int input = DisplayMenu();
                 Console.Clear();
-                switch (GetInputInt())
+                switch (input)
                 {
                     case 1:
                         ShowBooks();
@@ -49,6 +49,9 @@ namespace LibraryProgram
                         CheckBorrowedBooks();
                         break;
                     case 6:
+                        AddBook();
+                        break;
+                    case 7:
                         LogOut();
                         break;
                     default:
@@ -63,7 +66,7 @@ namespace LibraryProgram
 
 
         //writes out all the standard menu options and returns the user input
-        static void DisplayMenu()
+        static int DisplayMenu()
         {
             Console.Clear();
             Console.WriteLine("1. Visa böcker");
@@ -71,7 +74,10 @@ namespace LibraryProgram
             Console.WriteLine("3. Låna bok");
             Console.WriteLine("4. Lämna tillbaka bok");
             Console.WriteLine("5. Mina lån");
-            Console.WriteLine("6. Logga ut");
+            Console.WriteLine("6. Lägg till bok");
+            Console.WriteLine("7. Logga ut");
+
+            return GetInputInt();
         }
 
 
@@ -239,6 +245,53 @@ namespace LibraryProgram
             Console.WriteLine("Tryck Enter för att fortsätta.");
             Console.ReadKey();
             currentUserIndex = LogIn();
+        }
+
+
+        static void AddBook()
+        {
+            Console.WriteLine("Skriv en boktitel du vill lägga till i biblioteket.");
+            string? newBook = Console.ReadLine();
+            if (newBook == null)
+            {
+                Console.WriteLine("Ogiltig boktitel");
+                return;
+            }
+
+            books = AddToStringArray(books, newBook);
+            int randomBookAmount = new Random().Next(5, 20);
+            bookAmounts = AddToIntArray(bookAmounts, randomBookAmount);
+            loanedBooks = AddToIntArray(loanedBooks);
+            for (int i = 0; i < userBookLoans.Length; i++)
+            {
+                userBookLoans[i] = AddToIntArray(userBookLoans[i]);
+            }
+        }
+
+
+        //extends the length of array by copying it and transferring its values
+        static int[] AddToIntArray(int[] array, int newValue = 0)
+        {
+            int[] tempArray = new int[array.Length + 1];
+            for (int i = 0; i < array.Length; i++)
+            {
+                tempArray[i] = array[i];
+            }
+            tempArray[tempArray.Length - 1] = newValue;
+            return tempArray;
+        }
+
+
+        //works the same as method above but accepts a string array instead
+        static string[] AddToStringArray(string[] array, string newValue = "")
+        {
+            string[] tempArray = new string[array.Length + 1];
+            for (int i = 0; i < array.Length; i++)
+            {
+                tempArray[i] = array[i];
+            }
+            tempArray[tempArray.Length - 1] = newValue;
+            return tempArray;
         }
 
 
