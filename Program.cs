@@ -58,6 +58,9 @@ namespace LibraryProgram
                     case 8:
                         LogOut();
                         break;
+                    case 9:
+                        Environment.Exit(0);
+                        break;
                     default:
                         Console.WriteLine("Felaktig inmatning.");
                         break;
