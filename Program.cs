@@ -341,6 +341,29 @@ namespace LibraryProgram
             }
 
             int input = GetInputInt() - 1;
+            string removedUser = usernames[input];
+            string[] tempUsers = new string[usernames.Length - 1];
+            int[] tempPins = new int[pins.Length - 1];
+            bool[] tempAdmin = new bool[admin.Length - 1];
+            int[][] tempUserBookLoans = new int[userBookLoans.Length - 1][];
+            int count = 0;
+            for (int i = 0; i < usernames.Length; i++)
+            {
+                if (i != input)
+                {
+                    tempUsers[count] = usernames[i];
+                    tempPins[count] = pins[i];
+                    tempAdmin[count] = admin[i];
+                    tempUserBookLoans[count] = userBookLoans[i];
+                    count++;
+                }
+            }
+            usernames = tempUsers;
+            pins = tempPins;
+            admin = tempAdmin;
+            userBookLoans = tempUserBookLoans;
+
+            Console.WriteLine($"{removedUser} togs bort från användarlistan.");
         }
 
 
