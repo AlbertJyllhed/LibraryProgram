@@ -1,4 +1,5 @@
 ﻿using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LibraryProgram
 {
@@ -11,6 +12,7 @@ namespace LibraryProgram
 
         public static string[] usernames = ["Anna", "Bob", "Cecilia", "David", "Eva"];
         public static int[] pins = [1234, 2345, 3456, 4567, 5678];
+        public static bool[] admin = [true, false, true, false, false];
         //keeps track of all the books that the different users have in their possession
         public static int[][] userBookLoans = new int[usernames.Length][];
         //used to keep track of which user is currently logged in
@@ -52,7 +54,16 @@ namespace LibraryProgram
                         AddBook();
                         break;
                     case 7:
+                        AddUser();
+                        break;
+                    case 8:
+                        RemoveUser();
+                        break;
+                    case 9:
                         LogOut();
+                        break;
+                    case 0:
+                        Environment.Exit(0);
                         break;
                     default:
                         Console.WriteLine("Felaktig inmatning.");
@@ -74,8 +85,21 @@ namespace LibraryProgram
             Console.WriteLine("3. Låna bok");
             Console.WriteLine("4. Lämna tillbaka bok");
             Console.WriteLine("5. Mina lån");
-            Console.WriteLine("6. Lägg till bok");
-            Console.WriteLine("7. Logga ut");
+
+            if (admin[currentUserIndex])
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("----------------------------------------");
+                Console.WriteLine("6. Lägg till bok");
+                Console.WriteLine("7. Lägg till användare");
+                Console.WriteLine("8. Ta bort användare");
+            }
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("----------------------------------------");
+            Console.WriteLine("9. Logga ut");
+            Console.WriteLine("0. Avsluta");
+            Console.ForegroundColor = ConsoleColor.White;
 
             return GetInputInt();
         }
@@ -238,33 +262,126 @@ namespace LibraryProgram
         }
 
 
-        //displays a logout message and then takes the user back to the login screen
+        //takes the user back to the login screen
         static void LogOut()
         {
-            Console.WriteLine($"{usernames[currentUserIndex]} loggas ut.");
-            Console.WriteLine("Tryck Enter för att fortsätta.");
-            Console.ReadKey();
             currentUserIndex = LogIn();
         }
 
 
         static void AddBook()
         {
+            if (!admin[currentUserIndex])
+            {
+                Console.WriteLine("Du har inte tillgång till den här funktionen");
+                return;
+            }
+
             Console.WriteLine("Skriv en boktitel du vill lägga till i biblioteket.");
             string? newBook = Console.ReadLine();
-            if (newBook == null)
+            if (newBook == "" || newBook == null)
             {
                 Console.WriteLine("Ogiltig boktitel");
                 return;
             }
 
+            Console.WriteLine($"Hur många kopior av {newBook} vill du lägga till?");
+            int bookAmount = GetInputInt();
+
             books = AddToStringArray(books, newBook);
-            int randomBookAmount = new Random().Next(5, 20);
-            bookAmounts = AddToIntArray(bookAmounts, randomBookAmount);
+            bookAmounts = AddToIntArray(bookAmounts, bookAmount);
             loanedBooks = AddToIntArray(loanedBooks);
             for (int i = 0; i < userBookLoans.Length; i++)
             {
                 userBookLoans[i] = AddToIntArray(userBookLoans[i]);
+            }
+
+            Console.WriteLine($"{bookAmount} kopior av {newBook} lades till i biblioteket.");
+        }
+
+
+        static void AddUser()
+        {
+            if (!admin[currentUserIndex])
+            {
+                Console.WriteLine("Du har inte tillgång till den här funktionen");
+                return;
+            }
+
+            Console.WriteLine("Skriv ett nytt användarnamn.");
+            string? newUser = Console.ReadLine();
+            if (newUser == null)
+            {
+                Console.WriteLine("Ogiltigt användarnamn");
+                return;
+            }
+
+            Console.WriteLine("Skriv en ny PIN kod");
+            int newPin = GetInputInt();
+
+            Console.WriteLine("Ge användaren adminrättigheter? y/n");
+            bool isAdmin = IsInputCorrect("y");
+
+            usernames = AddToStringArray(usernames, newUser);
+            pins = AddToIntArray(pins, newPin);
+            admin = AddToBoolArray(admin, isAdmin);
+            int[][] tempUserBookLoans = new int[userBookLoans.Length + 1][];
+            for (int i = 0; i < userBookLoans.Length; i++)
+            {
+                tempUserBookLoans[i] = userBookLoans[i];
+            }
+            tempUserBookLoans[tempUserBookLoans.Length - 1] = [0, 0, 0, 0, 0];
+            userBookLoans = tempUserBookLoans;
+
+            Console.WriteLine($"Ny användare skapad.");
+        }
+
+
+        static void RemoveUser()
+        {
+            string previousUser = usernames[currentUserIndex];
+            Console.WriteLine("Vilken användare vill du ta bort?");
+            for (int i = 0; i < usernames.Length; i++)
+            {
+                Console.WriteLine($"{i + 1}. {usernames[i]}");
+            }
+            int input = GetInputInt() - 1;
+            Console.WriteLine($"Tar bort {usernames[input]} från användarlistan.");
+
+            string[] tempUsers = new string[usernames.Length - 1];
+            int[] tempPins = new int[pins.Length - 1];
+            bool[] tempAdmin = new bool[admin.Length - 1];
+            int[][] tempUserBookLoans = new int[userBookLoans.Length - 1][];
+
+            int count = 0;
+            for (int i = 0; i < usernames.Length; i++)
+            {
+                if (i != input)
+                {
+                    tempUsers[count] = usernames[i];
+                    tempPins[count] = pins[i];
+                    tempAdmin[count] = admin[i];
+                    tempUserBookLoans[count] = userBookLoans[i];
+                    count++;
+                }
+            }
+
+            usernames = tempUsers;
+            pins = tempPins;
+            admin = tempAdmin;
+            userBookLoans = tempUserBookLoans;
+
+            if (input == currentUserIndex)
+            {
+                LogOut();
+            }
+
+            for (int i = 0; i < usernames.Length; i++)
+            {
+                if (usernames[i] == previousUser)
+                {
+                    currentUserIndex = i;
+                }
             }
         }
 
@@ -295,15 +412,40 @@ namespace LibraryProgram
         }
 
 
+        //works the same as methods above but accepts a bool array instead
+        static bool[] AddToBoolArray(bool[] array, bool newValue = false)
+        {
+            bool[] tempArray = new bool[array.Length + 1];
+            for (int i = 0; i < array.Length; i++)
+            {
+                tempArray[i] = array[i];
+            }
+            tempArray[tempArray.Length - 1] = newValue;
+            return tempArray;
+        }
+
+
         //reusable method for input
         static int GetInputInt()
         {
             int input = 0;
             while (!int.TryParse(Console.ReadLine(), out input))
             {
-                Console.WriteLine($"Felaktig inmatning, försök igen.");
+                Console.WriteLine("Felaktig inmatning, försök igen.");
             }
             return input;
+        }
+
+
+        //compares user input to a predetermined answer and returns a bool
+        static bool IsInputCorrect(string correctAnswer)
+        {
+            string? input = Console.ReadLine();
+            if (input == null || input != correctAnswer)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
