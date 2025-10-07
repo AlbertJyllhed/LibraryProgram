@@ -262,6 +262,11 @@ namespace LibraryProgram
 
         static void AddBook()
         {
+            if (!IsAdmin())
+            {
+                return;
+            }
+
             Console.WriteLine("Skriv en boktitel du vill lägga till i biblioteket.");
             string? newBook = Console.ReadLine();
             if (newBook == null)
@@ -283,7 +288,10 @@ namespace LibraryProgram
 
         static void AddUser()
         {
-
+            if (!IsAdmin())
+            {
+                return;
+            }
         }
 
 
@@ -322,6 +330,19 @@ namespace LibraryProgram
                 Console.WriteLine($"Felaktig inmatning, försök igen.");
             }
             return input;
+        }
+
+
+        //checks if the user is an admin and writes a message if they are not
+        static bool IsAdmin()
+        {
+            if (admin[currentUserIndex])
+            {
+                Console.WriteLine("Du har inte tillgång till den här funktionen");
+                return true;
+            }
+
+            return false;
         }
     }
 }
