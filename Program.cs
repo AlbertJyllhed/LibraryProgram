@@ -281,22 +281,24 @@ namespace LibraryProgram
 
             Console.WriteLine("Skriv en boktitel du vill lägga till i biblioteket.");
             string? newBook = Console.ReadLine();
-            if (newBook == null)
+            if (newBook == "" || newBook == null)
             {
                 Console.WriteLine("Ogiltig boktitel");
                 return;
             }
 
+            Console.WriteLine($"Hur många kopior av {newBook} vill du lägga till?");
+            int bookAmount = GetInputInt();
+
             books = AddToStringArray(books, newBook);
-            int randomBookAmount = new Random().Next(5, 20);
-            bookAmounts = AddToIntArray(bookAmounts, randomBookAmount);
+            bookAmounts = AddToIntArray(bookAmounts, bookAmount);
             loanedBooks = AddToIntArray(loanedBooks);
             for (int i = 0; i < userBookLoans.Length; i++)
             {
                 userBookLoans[i] = AddToIntArray(userBookLoans[i]);
             }
 
-            Console.WriteLine($"{newBook} lades till i biblioteket.");
+            Console.WriteLine($"{bookAmount} kopior av {newBook} lades till i biblioteket.");
         }
 
 
@@ -332,7 +334,13 @@ namespace LibraryProgram
 
         static void RemoveUser()
         {
+            Console.WriteLine("Vilken användare vill du ta bort?");
+            for (int i = 0; i < usernames.Length; i++)
+            {
+                Console.WriteLine($"{i + 1}. {usernames[i]}");
+            }
 
+            int input = GetInputInt() - 1;
         }
 
 
