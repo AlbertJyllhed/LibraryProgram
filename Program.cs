@@ -1,4 +1,5 @@
 ﻿using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LibraryProgram
 {
@@ -324,6 +325,13 @@ namespace LibraryProgram
             usernames = AddToStringArray(usernames, newUser);
             pins = AddToIntArray(pins, newPin);
             admin = AddToBoolArray(admin, isAdmin);
+            int[][] tempUserBookLoans = new int[userBookLoans.Length + 1][];
+            for (int i = 0; i < userBookLoans.Length; i++)
+            {
+                tempUserBookLoans[i] = userBookLoans[i];
+            }
+            tempUserBookLoans[tempUserBookLoans.Length - 1] = [0, 0, 0, 0, 0];
+            userBookLoans = tempUserBookLoans;
 
             Console.WriteLine($"Ny användare skapad.");
         }
@@ -331,6 +339,7 @@ namespace LibraryProgram
 
         static void RemoveUser()
         {
+            string previousUser = usernames[currentUserIndex];
             Console.WriteLine("Vilken användare vill du ta bort?");
             for (int i = 0; i < usernames.Length; i++)
             {
@@ -339,7 +348,6 @@ namespace LibraryProgram
             int input = GetInputInt() - 1;
             Console.WriteLine($"Tar bort {usernames[input]} från användarlistan.");
 
-            //create new arrays temporarily
             string[] tempUsers = new string[usernames.Length - 1];
             int[] tempPins = new int[pins.Length - 1];
             bool[] tempAdmin = new bool[admin.Length - 1];
@@ -348,7 +356,6 @@ namespace LibraryProgram
             int count = 0;
             for (int i = 0; i < usernames.Length; i++)
             {
-                //don't copy over the user that has been selected for removal
                 if (i != input)
                 {
                     tempUsers[count] = usernames[i];
@@ -359,15 +366,22 @@ namespace LibraryProgram
                 }
             }
 
-            //overwrite the original arrays with the new ones
             usernames = tempUsers;
             pins = tempPins;
             admin = tempAdmin;
             userBookLoans = tempUserBookLoans;
-            
+
             if (input == currentUserIndex)
             {
                 LogOut();
+            }
+
+            for (int i = 0; i < usernames.Length; i++)
+            {
+                if (usernames[i] == previousUser)
+                {
+                    currentUserIndex = i;
+                }
             }
         }
 
