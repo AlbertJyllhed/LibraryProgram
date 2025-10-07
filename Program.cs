@@ -11,6 +11,7 @@ namespace LibraryProgram
 
         public static string[] usernames = ["Anna", "Bob", "Cecilia", "David", "Eva"];
         public static int[] pins = [1234, 2345, 3456, 4567, 5678];
+        public static bool[] admin = [true, false, true, false, false];
         //keeps track of all the books that the different users have in their possession
         public static int[][] userBookLoans = new int[usernames.Length][];
         //used to keep track of which user is currently logged in
@@ -48,10 +49,13 @@ namespace LibraryProgram
                     case 5:
                         CheckBorrowedBooks();
                         break;
-                    case 6:
+                    case 7:
                         AddBook();
                         break;
-                    case 7:
+                    case 8:
+                        AddUser();
+                        break;
+                    case 9:
                         LogOut();
                         break;
                     default:
@@ -74,8 +78,16 @@ namespace LibraryProgram
             Console.WriteLine("3. Låna bok");
             Console.WriteLine("4. Lämna tillbaka bok");
             Console.WriteLine("5. Mina lån");
-            Console.WriteLine("6. Lägg till bok");
-            Console.WriteLine("7. Logga ut");
+
+            if (admin[currentUserIndex])
+            {
+                Console.WriteLine("7. Lägg till bok");
+                Console.WriteLine("8. Lägg till användare");
+            }
+
+            Console.WriteLine("----------------------------------------");
+            Console.WriteLine("9. Logga ut");
+            Console.WriteLine("10. Avsluta");
 
             return GetInputInt();
         }
@@ -266,6 +278,12 @@ namespace LibraryProgram
             {
                 userBookLoans[i] = AddToIntArray(userBookLoans[i]);
             }
+        }
+
+
+        static void AddUser()
+        {
+
         }
 
 
