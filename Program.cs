@@ -245,6 +245,32 @@ namespace LibraryProgram
         static void AddBook()
         {
             string? newBook = Console.ReadLine();
+            if (newBook == null)
+            {
+                Console.WriteLine("Ogiltig boktitel");
+                return;
+            }
+
+            string[] tempBooks = new string[books.Length + 1];
+            for (int i = 0; i < books.Length; i++)
+            {
+                tempBooks[i] = books[i];
+            }
+            tempBooks[tempBooks.Length - 1] = newBook;
+            books = tempBooks;
+        }
+
+
+        //extends the length of array by copying it and transferring its values
+        static void AddToIntArray(int[] array, int newValue = 0)
+        {
+            int[] tempArray = new int[array.Length + 1];
+            for (int i = 0; i < array.Length; i++)
+            {
+                tempArray[i] = array[i];
+            }
+            tempArray[tempArray.Length - 1] = newValue;
+            array = tempArray;
         }
 
 
