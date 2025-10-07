@@ -274,6 +274,19 @@ namespace LibraryProgram
         }
 
 
+        //works the same as method above but accepts a string array instead
+        static void AddToStringArray(string[] array, string newValue = "")
+        {
+            string[] tempArray = new string[array.Length + 1];
+            for (int i = 0; i < array.Length; i++)
+            {
+                tempArray[i] = array[i];
+            }
+            tempArray[tempArray.Length - 1] = newValue;
+            array = tempArray;
+        }
+
+
         //reusable method for input
         static int GetInputInt()
         {
