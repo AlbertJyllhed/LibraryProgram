@@ -49,13 +49,13 @@ namespace LibraryProgram
                     case 5:
                         CheckBorrowedBooks();
                         break;
-                    case 7:
+                    case 6:
                         AddBook();
                         break;
-                    case 8:
+                    case 7:
                         AddUser();
                         break;
-                    case 9:
+                    case 8:
                         LogOut();
                         break;
                     default:
@@ -81,13 +81,17 @@ namespace LibraryProgram
 
             if (admin[currentUserIndex])
             {
-                Console.WriteLine("7. Lägg till bok");
-                Console.WriteLine("8. Lägg till användare");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("----------------------------------------");
+                Console.WriteLine("6. Lägg till bok");
+                Console.WriteLine("7. Lägg till användare");
             }
 
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("----------------------------------------");
-            Console.WriteLine("9. Logga ut");
-            Console.WriteLine("10. Avsluta");
+            Console.WriteLine("8. Logga ut");
+            Console.WriteLine("9. Avsluta");
+            Console.ForegroundColor = ConsoleColor.White;
 
             return GetInputInt();
         }
@@ -292,6 +296,22 @@ namespace LibraryProgram
             {
                 return;
             }
+
+            Console.WriteLine("Skriv ett nytt användarnamn.");
+            string? newUser = Console.ReadLine();
+            if (newUser == null)
+            {
+                Console.WriteLine("Ogiltigt användarnamn");
+                return;
+            }
+
+            Console.WriteLine("Skriv en ny PIN kod");
+            int newPin = GetInputInt();
+
+            usernames = AddToStringArray(usernames, newUser);
+            pins = AddToIntArray(pins, newPin);
+
+            Console.WriteLine("Ge användaren adminrättigheter? y/n");
         }
 
 
