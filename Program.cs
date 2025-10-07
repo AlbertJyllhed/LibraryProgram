@@ -56,9 +56,12 @@ namespace LibraryProgram
                         AddUser();
                         break;
                     case 8:
-                        LogOut();
+                        RemoveUser();
                         break;
                     case 9:
+                        LogOut();
+                        break;
+                    case 0:
                         Environment.Exit(0);
                         break;
                     default:
@@ -88,12 +91,13 @@ namespace LibraryProgram
                 Console.WriteLine("----------------------------------------");
                 Console.WriteLine("6. Lägg till bok");
                 Console.WriteLine("7. Lägg till användare");
+                Console.WriteLine("8. Ta bort användare");
             }
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("----------------------------------------");
-            Console.WriteLine("8. Logga ut");
-            Console.WriteLine("9. Avsluta");
+            Console.WriteLine("9. Logga ut");
+            Console.WriteLine("0. Avsluta");
             Console.ForegroundColor = ConsoleColor.White;
 
             return GetInputInt();
@@ -291,6 +295,8 @@ namespace LibraryProgram
             {
                 userBookLoans[i] = AddToIntArray(userBookLoans[i]);
             }
+
+            Console.WriteLine($"{newBook} lades till i biblioteket.");
         }
 
 
@@ -313,12 +319,20 @@ namespace LibraryProgram
             Console.WriteLine("Skriv en ny PIN kod");
             int newPin = GetInputInt();
 
-            usernames = AddToStringArray(usernames, newUser);
-            pins = AddToIntArray(pins, newPin);
-
             Console.WriteLine("Ge användaren adminrättigheter? y/n");
             bool isAdmin = IsInputCorrect("y");
+
+            usernames = AddToStringArray(usernames, newUser);
+            pins = AddToIntArray(pins, newPin);
             admin = AddToBoolArray(admin, isAdmin);
+
+            Console.WriteLine($"Ny användare skapad.");
+        }
+
+
+        static void RemoveUser()
+        {
+
         }
 
 
@@ -373,6 +387,7 @@ namespace LibraryProgram
         }
 
 
+        //compares user input to a predetermined answer and returns a bool
         static bool IsInputCorrect(string correctAnswer)
         {
             string? input = Console.ReadLine();
