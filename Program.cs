@@ -317,6 +317,8 @@ namespace LibraryProgram
             pins = AddToIntArray(pins, newPin);
 
             Console.WriteLine("Ge användaren adminrättigheter? y/n");
+            bool isAdmin = IsInputCorrect("y");
+            admin = AddToBoolArray(admin, isAdmin);
         }
 
 
@@ -346,15 +348,39 @@ namespace LibraryProgram
         }
 
 
+        //works the same as methods above but accepts a bool array instead
+        static bool[] AddToBoolArray(bool[] array, bool newValue = false)
+        {
+            bool[] tempArray = new bool[array.Length + 1];
+            for (int i = 0; i < array.Length; i++)
+            {
+                tempArray[i] = array[i];
+            }
+            tempArray[tempArray.Length - 1] = newValue;
+            return tempArray;
+        }
+
+
         //reusable method for input
         static int GetInputInt()
         {
             int input = 0;
             while (!int.TryParse(Console.ReadLine(), out input))
             {
-                Console.WriteLine($"Felaktig inmatning, försök igen.");
+                Console.WriteLine("Felaktig inmatning, försök igen.");
             }
             return input;
+        }
+
+
+        static bool IsInputCorrect(string correctAnswer)
+        {
+            string? input = Console.ReadLine();
+            if (input == null || input != correctAnswer)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
