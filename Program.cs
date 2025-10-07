@@ -261,12 +261,9 @@ namespace LibraryProgram
         }
 
 
-        //displays a logout message and then takes the user back to the login screen
+        //takes the user back to the login screen
         static void LogOut()
         {
-            Console.WriteLine($"{usernames[currentUserIndex]} loggas ut.");
-            Console.WriteLine("Tryck Enter för att fortsätta.");
-            Console.ReadKey();
             currentUserIndex = LogIn();
         }
 
@@ -339,16 +336,19 @@ namespace LibraryProgram
             {
                 Console.WriteLine($"{i + 1}. {usernames[i]}");
             }
-
             int input = GetInputInt() - 1;
-            string removedUser = usernames[input];
+            Console.WriteLine($"Tar bort {usernames[input]} från användarlistan.");
+
+            //create new arrays temporarily
             string[] tempUsers = new string[usernames.Length - 1];
             int[] tempPins = new int[pins.Length - 1];
             bool[] tempAdmin = new bool[admin.Length - 1];
             int[][] tempUserBookLoans = new int[userBookLoans.Length - 1][];
+
             int count = 0;
             for (int i = 0; i < usernames.Length; i++)
             {
+                //don't copy over the user that has been selected for removal
                 if (i != input)
                 {
                     tempUsers[count] = usernames[i];
@@ -358,12 +358,17 @@ namespace LibraryProgram
                     count++;
                 }
             }
+
+            //overwrite the original arrays with the new ones
             usernames = tempUsers;
             pins = tempPins;
             admin = tempAdmin;
             userBookLoans = tempUserBookLoans;
-
-            Console.WriteLine($"{removedUser} togs bort från användarlistan.");
+            
+            if (input == currentUserIndex)
+            {
+                LogOut();
+            }
         }
 
 
