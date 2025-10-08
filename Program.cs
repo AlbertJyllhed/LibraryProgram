@@ -15,18 +15,16 @@ namespace LibraryProgram
         public static bool[] admin = [true, false, true, false, false];
         //keeps track of all the books that the different users have in their possession
         public static int[][] userBookLoans = new int[usernames.Length][];
+        public static DateTime[][] returnDates = new DateTime[usernames.Length][];
         //used to keep track of which user is currently logged in
         public static int currentUserIndex = -1;
+        public static DateTime date = DateTime.Today;
 
 
         static void Main(string[] args)
         {
-            //initialize userBookLoans array
-            for (int i = 0; i < userBookLoans.Length; i++)
-            {
-                userBookLoans[i] = [0, 0, 0, 0, 0];
-            }
-
+            Console.Title = "LibraryProgram";
+            SetupLibrary();
             currentUserIndex = LogIn();
 
             while (currentUserIndex > -1)
@@ -72,6 +70,24 @@ namespace LibraryProgram
 
                 Console.WriteLine("\nTryck Enter för att gå till huvudmenyn.");
                 Console.ReadKey();
+            }
+        }
+
+
+        //initialize userBookLoans array and dates
+        static void SetupLibrary()
+        {
+            for (int i = 0; i < userBookLoans.Length; i++)
+            {
+                int[] tempUserBookLoans = new int[books.Length];
+                DateTime[] tempDates = new DateTime[books.Length];
+                for (int j = 0; j < usernames.Length; j++)
+                {
+                    tempUserBookLoans[j] = 0;
+                    tempDates[j] = DateTime.Today;
+                }
+                userBookLoans[i] = tempUserBookLoans;
+                returnDates[i] = tempDates;
             }
         }
 
@@ -159,6 +175,8 @@ namespace LibraryProgram
                 loanedBooks[input]++;
                 userBookLoans[currentUserIndex][input]++;
                 Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[input]}");
+                returnDates[currentUserIndex][input] = date.AddDays(7);
+                Console.WriteLine($"Återlämningsdatumet är {returnDates[currentUserIndex][input].ToLongDateString()}");
             }
             else
             {
@@ -180,7 +198,8 @@ namespace LibraryProgram
             {
                 if (userBookLoans[currentUserIndex][i] > 0)
                 {
-                    Console.WriteLine($"{i + 1}. {books[i]}");
+                    string returnDate = returnDates[currentUserIndex][i].ToLongDateString();
+                    Console.WriteLine($"{i + 1}. {books[i]}, åter: {returnDate}");
                 }
             }
 
@@ -207,7 +226,8 @@ namespace LibraryProgram
             {
                 if (userBookLoans[currentUserIndex][i] > 0)
                 {
-                    Console.WriteLine($"{books[i]}: {userBookLoans[currentUserIndex][i]} lånade");
+                    string returnDate = returnDates[currentUserIndex][i].ToLongDateString();
+                    Console.WriteLine($"{books[i]}: {userBookLoans[currentUserIndex][i]} lånade, åter {returnDate}");
                 }
             }
         }
@@ -288,12 +308,12 @@ namespace LibraryProgram
             Console.WriteLine($"Hur många kopior av {newBook} vill du lägga till?");
             int bookAmount = GetInputInt();
 
-            books = AddToStringArray(books, newBook);
-            bookAmounts = AddToIntArray(bookAmounts, bookAmount);
-            loanedBooks = AddToIntArray(loanedBooks);
+            books = AddToArray(books, newBook);
+            bookAmounts = AddToArray(bookAmounts, bookAmount);
+            loanedBooks = AddToArray(loanedBooks);
             for (int i = 0; i < userBookLoans.Length; i++)
             {
-                userBookLoans[i] = AddToIntArray(userBookLoans[i]);
+                userBookLoans[i] = AddToArray(userBookLoans[i]);
             }
 
             Console.WriteLine($"{bookAmount} kopior av {newBook} lades till i biblioteket.");
@@ -322,14 +342,15 @@ namespace LibraryProgram
             Console.WriteLine("Ge användaren adminrättigheter? y/n");
             bool isAdmin = IsInputCorrect("y");
 
-            usernames = AddToStringArray(usernames, newUser);
-            pins = AddToIntArray(pins, newPin);
-            admin = AddToBoolArray(admin, isAdmin);
+            usernames = AddToArray(usernames, newUser);
+            pins = AddToArray(pins, newPin);
+            admin = AddToArray(admin, isAdmin);
             int[][] tempUserBookLoans = new int[userBookLoans.Length + 1][];
             for (int i = 0; i < userBookLoans.Length; i++)
             {
                 tempUserBookLoans[i] = userBookLoans[i];
             }
+            //doesn't add enough spaces if another book has already been added
             tempUserBookLoans[tempUserBookLoans.Length - 1] = [0, 0, 0, 0, 0];
             userBookLoans = tempUserBookLoans;
 
@@ -387,7 +408,7 @@ namespace LibraryProgram
 
 
         //extends the length of array by copying it and transferring its values
-        static int[] AddToIntArray(int[] array, int newValue = 0)
+        static int[] AddToArray(int[] array, int newValue = 0)
         {
             int[] tempArray = new int[array.Length + 1];
             for (int i = 0; i < array.Length; i++)
@@ -400,7 +421,7 @@ namespace LibraryProgram
 
 
         //works the same as method above but accepts a string array instead
-        static string[] AddToStringArray(string[] array, string newValue = "")
+        static string[] AddToArray(string[] array, string newValue = "")
         {
             string[] tempArray = new string[array.Length + 1];
             for (int i = 0; i < array.Length; i++)
@@ -413,7 +434,7 @@ namespace LibraryProgram
 
 
         //works the same as methods above but accepts a bool array instead
-        static bool[] AddToBoolArray(bool[] array, bool newValue = false)
+        static bool[] AddToArray(bool[] array, bool newValue = false)
         {
             bool[] tempArray = new bool[array.Length + 1];
             for (int i = 0; i < array.Length; i++)
