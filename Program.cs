@@ -15,16 +15,28 @@ namespace LibraryProgram
         public static bool[] admin = [true, false, true, false, false];
         //keeps track of all the books that the different users have in their possession
         public static int[][] userBookLoans = new int[usernames.Length][];
+        public static DateTime[][] returnDates = new DateTime[usernames.Length][];
         //used to keep track of which user is currently logged in
         public static int currentUserIndex = -1;
+        public static DateTime date = DateTime.Today;
 
 
         static void Main(string[] args)
         {
-            //initialize userBookLoans array
+            Console.Title = "LibraryProgram";
+
+            //initialize userBookLoans array and dates
             for (int i = 0; i < userBookLoans.Length; i++)
             {
-                userBookLoans[i] = [0, 0, 0, 0, 0];
+                int[] tempUserBookLoans = new int[books.Length];
+                DateTime[] tempDates = new DateTime[books.Length];
+                for (int j = 0; j < usernames.Length; j++)
+                {
+                    tempUserBookLoans[j] = 0;
+                    tempDates[j] = DateTime.Today;
+                }
+                userBookLoans[i] = tempUserBookLoans;
+                returnDates[i] = tempDates;
             }
 
             currentUserIndex = LogIn();
@@ -159,6 +171,8 @@ namespace LibraryProgram
                 loanedBooks[input]++;
                 userBookLoans[currentUserIndex][input]++;
                 Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[input]}");
+                returnDates[currentUserIndex][input] = date.AddDays(7);
+                Console.WriteLine($"Återlämningsdatumet är {returnDates[currentUserIndex][input].ToLongDateString()}");
             }
             else
             {
@@ -330,6 +344,7 @@ namespace LibraryProgram
             {
                 tempUserBookLoans[i] = userBookLoans[i];
             }
+            //doesn't add enough spaces if another book has already been added
             tempUserBookLoans[tempUserBookLoans.Length - 1] = [0, 0, 0, 0, 0];
             userBookLoans = tempUserBookLoans;
 
