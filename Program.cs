@@ -308,12 +308,12 @@ namespace LibraryProgram
             Console.WriteLine($"Hur många kopior av {newBook} vill du lägga till?");
             int bookAmount = GetInputInt();
 
-            books = AddToStringArray(books, newBook);
-            bookAmounts = AddToIntArray(bookAmounts, bookAmount);
-            loanedBooks = AddToIntArray(loanedBooks);
+            books = AddToArray(books, newBook);
+            bookAmounts = AddToArray(bookAmounts, bookAmount);
+            loanedBooks = AddToArray(loanedBooks);
             for (int i = 0; i < userBookLoans.Length; i++)
             {
-                userBookLoans[i] = AddToIntArray(userBookLoans[i]);
+                userBookLoans[i] = AddToArray(userBookLoans[i]);
             }
 
             Console.WriteLine($"{bookAmount} kopior av {newBook} lades till i biblioteket.");
@@ -342,9 +342,9 @@ namespace LibraryProgram
             Console.WriteLine("Ge användaren adminrättigheter? y/n");
             bool isAdmin = IsInputCorrect("y");
 
-            usernames = AddToStringArray(usernames, newUser);
-            pins = AddToIntArray(pins, newPin);
-            admin = AddToBoolArray(admin, isAdmin);
+            usernames = AddToArray(usernames, newUser);
+            pins = AddToArray(pins, newPin);
+            admin = AddToArray(admin, isAdmin);
             int[][] tempUserBookLoans = new int[userBookLoans.Length + 1][];
             for (int i = 0; i < userBookLoans.Length; i++)
             {
@@ -408,7 +408,7 @@ namespace LibraryProgram
 
 
         //extends the length of array by copying it and transferring its values
-        static int[] AddToIntArray(int[] array, int newValue = 0)
+        static int[] AddToArray(int[] array, int newValue = 0)
         {
             int[] tempArray = new int[array.Length + 1];
             for (int i = 0; i < array.Length; i++)
@@ -421,7 +421,7 @@ namespace LibraryProgram
 
 
         //works the same as method above but accepts a string array instead
-        static string[] AddToStringArray(string[] array, string newValue = "")
+        static string[] AddToArray(string[] array, string newValue = "")
         {
             string[] tempArray = new string[array.Length + 1];
             for (int i = 0; i < array.Length; i++)
@@ -434,7 +434,7 @@ namespace LibraryProgram
 
 
         //works the same as methods above but accepts a bool array instead
-        static bool[] AddToBoolArray(bool[] array, bool newValue = false)
+        static bool[] AddToArray(bool[] array, bool newValue = false)
         {
             bool[] tempArray = new bool[array.Length + 1];
             for (int i = 0; i < array.Length; i++)
