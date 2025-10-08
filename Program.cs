@@ -24,21 +24,7 @@ namespace LibraryProgram
         static void Main(string[] args)
         {
             Console.Title = "LibraryProgram";
-
-            //initialize userBookLoans array and dates
-            for (int i = 0; i < userBookLoans.Length; i++)
-            {
-                int[] tempUserBookLoans = new int[books.Length];
-                DateTime[] tempDates = new DateTime[books.Length];
-                for (int j = 0; j < usernames.Length; j++)
-                {
-                    tempUserBookLoans[j] = 0;
-                    tempDates[j] = DateTime.Today;
-                }
-                userBookLoans[i] = tempUserBookLoans;
-                returnDates[i] = tempDates;
-            }
-
+            SetupLibrary();
             currentUserIndex = LogIn();
 
             while (currentUserIndex > -1)
@@ -84,6 +70,24 @@ namespace LibraryProgram
 
                 Console.WriteLine("\nTryck Enter för att gå till huvudmenyn.");
                 Console.ReadKey();
+            }
+        }
+
+
+        //initialize userBookLoans array and dates
+        static void SetupLibrary()
+        {
+            for (int i = 0; i < userBookLoans.Length; i++)
+            {
+                int[] tempUserBookLoans = new int[books.Length];
+                DateTime[] tempDates = new DateTime[books.Length];
+                for (int j = 0; j < usernames.Length; j++)
+                {
+                    tempUserBookLoans[j] = 0;
+                    tempDates[j] = DateTime.Today;
+                }
+                userBookLoans[i] = tempUserBookLoans;
+                returnDates[i] = tempDates;
             }
         }
 
