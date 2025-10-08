@@ -198,7 +198,8 @@ namespace LibraryProgram
             {
                 if (userBookLoans[currentUserIndex][i] > 0)
                 {
-                    Console.WriteLine($"{i + 1}. {books[i]}");
+                    string returnDate = returnDates[currentUserIndex][i].ToLongDateString();
+                    Console.WriteLine($"{i + 1}. {books[i]}, åter: {returnDate}");
                 }
             }
 
@@ -225,7 +226,8 @@ namespace LibraryProgram
             {
                 if (userBookLoans[currentUserIndex][i] > 0)
                 {
-                    Console.WriteLine($"{books[i]}: {userBookLoans[currentUserIndex][i]} lånade");
+                    string returnDate = returnDates[currentUserIndex][i].ToLongDateString();
+                    Console.WriteLine($"{books[i]}: {userBookLoans[currentUserIndex][i]} lånade, åter {returnDate}");
                 }
             }
         }
