@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LibraryProgram
+﻿namespace LibraryProgram
 {
     internal class Program
     {
@@ -57,7 +55,7 @@ namespace LibraryProgram
                         RemoveUser();
                         break;
                     case 9:
-                        LogOut();
+                        currentUserIndex = LogIn();
                         break;
                     case 0:
                         Environment.Exit(0);
@@ -281,13 +279,6 @@ namespace LibraryProgram
         }
 
 
-        //takes the user back to the login screen
-        static void LogOut()
-        {
-            currentUserIndex = LogIn();
-        }
-
-
         static void AddBook()
         {
             if (!admin[currentUserIndex])
@@ -393,7 +384,7 @@ namespace LibraryProgram
 
             if (input == currentUserIndex)
             {
-                LogOut();
+                currentUserIndex = LogIn();
             }
 
             for (int i = 0; i < usernames.Length; i++)
