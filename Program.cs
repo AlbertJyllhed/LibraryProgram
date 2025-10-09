@@ -11,20 +11,19 @@
         public static int[] pins = [1234, 2345, 3456, 4567, 5678];
         public static bool[] admin = [true, false, true, false, false];
         //keeps track of all the books that the different users have in their possession
-        public static int[][] userBookLoans = new int[usernames.Length][];
+        public static int[][] userLoans = new int[usernames.Length][];
         public static DateTime[][] returnDates = new DateTime[usernames.Length][];
         //used to keep track of which user is currently logged in
-        public static int currentUserIndex = -1;
-        public static DateTime date = DateTime.Today;
+        public static int userIndex = -1;
 
 
         static void Main(string[] args)
         {
             Console.Title = "LibraryProgram";
             SetupLibrary();
-            currentUserIndex = LogIn();
+            userIndex = LogIn();
 
-            while (currentUserIndex > -1)
+            while (userIndex > -1)
             {
                 int input = DisplayMenu();
                 Console.Clear();
@@ -55,7 +54,7 @@
                         RemoveUser();
                         break;
                     case 9:
-                        currentUserIndex = LogIn();
+                        userIndex = LogIn();
                         break;
                     case 0:
                         Environment.Exit(0);
@@ -72,20 +71,17 @@
 
 
         //initialize userBookLoans array and dates
-        static void SetupLibrary()
+        static void SetupLibrary(int arraySize = 5)
         {
-            for (int i = 0; i < userBookLoans.Length; i++)
+            int[][] tempUserLoans = new int[books.Length][];
+            DateTime[][] tempDates = new DateTime[books.Length][];
+            for (int i = 0; i < userLoans.Length; i++)
             {
-                int[] tempUserBookLoans = new int[books.Length];
-                DateTime[] tempDates = new DateTime[books.Length];
-                for (int j = 0; j < usernames.Length; j++)
-                {
-                    tempUserBookLoans[j] = 0;
-                    tempDates[j] = DateTime.Today;
-                }
-                userBookLoans[i] = tempUserBookLoans;
-                returnDates[i] = tempDates;
+                tempUserLoans[i] = new int[arraySize];
+                tempDates[i] = new DateTime[arraySize];
             }
+            userLoans = tempUserLoans;
+            returnDates = tempDates;
         }
 
 
@@ -99,7 +95,7 @@
             Console.WriteLine("4. Lämna tillbaka bok");
             Console.WriteLine("5. Mina lån");
 
-            if (admin[currentUserIndex])
+            if (admin[userIndex])
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("----------------------------------------");
@@ -170,10 +166,10 @@
             if (availableBooks > 0)
             {
                 loanedBooks[input]++;
-                userBookLoans[currentUserIndex][input]++;
-                Console.WriteLine($"{usernames[currentUserIndex]} lånar en kopia av {books[input]}");
-                returnDates[currentUserIndex][input] = date.AddDays(7);
-                Console.WriteLine($"Återlämningsdatumet är {returnDates[currentUserIndex][input].ToLongDateString()}");
+                userLoans[userIndex][input]++;
+                returnDates[userIndex][input] = DateTime.Today.AddDays(7);
+                string returnDate = returnDates[userIndex][input].ToLongDateString();
+                Console.WriteLine($"{usernames[userIndex]} lånar en kopia av {books[input]}, åter {returnDate}");
             }
             else
             {
@@ -191,21 +187,21 @@
             }
 
             Console.WriteLine("Vilken bok vill du lämna tillbaka?");
-            for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
+            for (int i = 0; i < userLoans[userIndex].Length; i++)
             {
-                if (userBookLoans[currentUserIndex][i] > 0)
+                if (userLoans[userIndex][i] > 0)
                 {
-                    string returnDate = returnDates[currentUserIndex][i].ToLongDateString();
-                    Console.WriteLine($"{i + 1}. {books[i]}, åter: {returnDate}");
+                    string returnDate = returnDates[userIndex][i].ToLongDateString();
+                    Console.WriteLine($"{i + 1}. {books[i]}, åter {returnDate}");
                 }
             }
 
             int input = GetInputInt() - 1;
-            if (userBookLoans[currentUserIndex][input] > 0)
+            if (userLoans[userIndex][input] > 0)
             {
                 loanedBooks[input]--;
-                userBookLoans[currentUserIndex][input]--;
-                Console.WriteLine($"{usernames[currentUserIndex]} lämnar tillbaka en kopia av {books[input]}");
+                userLoans[userIndex][input]--;
+                Console.WriteLine($"{usernames[userIndex]} lämnar tillbaka en kopia av {books[input]}");
             }
         }
 
@@ -218,13 +214,13 @@
                 return;
             }
 
-            Console.WriteLine($"{usernames[currentUserIndex]}s lån:");
-            for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
+            Console.WriteLine($"{usernames[userIndex]}s lån:");
+            for (int i = 0; i < userLoans[userIndex].Length; i++)
             {
-                if (userBookLoans[currentUserIndex][i] > 0)
+                if (userLoans[userIndex][i] > 0)
                 {
-                    string returnDate = returnDates[currentUserIndex][i].ToLongDateString();
-                    Console.WriteLine($"{books[i]}: {userBookLoans[currentUserIndex][i]} lånade, åter {returnDate}");
+                    string returnDate = returnDates[userIndex][i].ToLongDateString();
+                    Console.WriteLine($"{books[i]}: {userLoans[userIndex][i]} lånade, åter {returnDate}");
                 }
             }
         }
@@ -233,9 +229,9 @@
         //checks if the current user has any borrowed books
         static bool HasBorrowedBooks()
         {
-            for (int i = 0; i < userBookLoans[currentUserIndex].Length; i++)
+            for (int i = 0; i < userLoans[userIndex].Length; i++)
             {
-                if (userBookLoans[currentUserIndex][i] > 0)
+                if (userLoans[userIndex][i] > 0)
                 {
                     return true;
                 }
@@ -248,7 +244,7 @@
         //handles logging in to the library system
         static int LogIn()
         {
-            int tries = 0, userIndex = -1;
+            int tries = 0;
             while (tries < 3)
             {
                 Console.Clear();
@@ -267,8 +263,7 @@
                 {
                     if (username == usernames[i] && pin == pins[i])
                     {
-                        userIndex = i;
-                        return userIndex;
+                        return i;
                     }
                 }
 
@@ -281,7 +276,7 @@
 
         static void AddBook()
         {
-            if (!admin[currentUserIndex])
+            if (!admin[userIndex])
             {
                 Console.WriteLine("Du har inte tillgång till den här funktionen");
                 return;
@@ -301,18 +296,32 @@
             books = AddToArray(books, newBook);
             bookAmounts = AddToArray(bookAmounts, bookAmount);
             loanedBooks = AddToArray(loanedBooks);
-            for (int i = 0; i < userBookLoans.Length; i++)
+            for (int i = 0; i < userLoans.Length; i++)
             {
-                userBookLoans[i] = AddToArray(userBookLoans[i]);
+                userLoans[i] = AddToArray(userLoans[i]);
+                returnDates[i] = AddToArray(returnDates[i]);
             }
 
             Console.WriteLine($"{bookAmount} kopior av {newBook} lades till i biblioteket.");
         }
 
 
+        static void PrintJaggedArray(DateTime[][] jaggedArray)
+        {
+            for (int i = 0; i < jaggedArray.Length; i++)
+            {
+                Console.WriteLine(i);
+                for (int j = 0; j < jaggedArray[i].Length; j++)
+                {
+                    Console.WriteLine(jaggedArray[i][j].ToString());
+                }
+            }
+        }
+
+
         static void AddUser()
         {
-            if (!admin[currentUserIndex])
+            if (!admin[userIndex])
             {
                 Console.WriteLine("Du har inte tillgång till den här funktionen");
                 return;
@@ -335,14 +344,19 @@
             usernames = AddToArray(usernames, newUser);
             pins = AddToArray(pins, newPin);
             admin = AddToArray(admin, isAdmin);
-            int[][] tempUserBookLoans = new int[userBookLoans.Length + 1][];
-            for (int i = 0; i < userBookLoans.Length; i++)
+            int[][] tempUserLoans = new int[userLoans.Length + 1][];
+            DateTime[][] tempDates = new DateTime[returnDates.Length + 1][];
+            for (int i = 0; i < userLoans.Length; i++)
             {
-                tempUserBookLoans[i] = userBookLoans[i];
+                tempUserLoans[i] = userLoans[i];
+                tempDates[i] = returnDates[i];
             }
-            //doesn't add enough spaces if another book has already been added
-            tempUserBookLoans[tempUserBookLoans.Length - 1] = [0, 0, 0, 0, 0];
-            userBookLoans = tempUserBookLoans;
+            tempUserLoans[tempUserLoans.Length - 1] = new int[tempUserLoans.Length];
+            tempDates[tempDates.Length - 1] = new DateTime[tempDates.Length];
+            userLoans = tempUserLoans;
+            returnDates = tempDates;
+
+            PrintJaggedArray(returnDates);
 
             Console.WriteLine($"Ny användare skapad.");
         }
@@ -350,7 +364,7 @@
 
         static void RemoveUser()
         {
-            string previousUser = usernames[currentUserIndex];
+            string previousUser = usernames[userIndex];
             Console.WriteLine("Vilken användare vill du ta bort?");
             for (int i = 0; i < usernames.Length; i++)
             {
@@ -362,7 +376,8 @@
             string[] tempUsers = new string[usernames.Length - 1];
             int[] tempPins = new int[pins.Length - 1];
             bool[] tempAdmin = new bool[admin.Length - 1];
-            int[][] tempUserBookLoans = new int[userBookLoans.Length - 1][];
+            int[][] tempUserLoans = new int[userLoans.Length - 1][];
+            DateTime[][] tempDates = new DateTime[returnDates.Length - 1][];
 
             int count = 0;
             for (int i = 0; i < usernames.Length; i++)
@@ -372,7 +387,8 @@
                     tempUsers[count] = usernames[i];
                     tempPins[count] = pins[i];
                     tempAdmin[count] = admin[i];
-                    tempUserBookLoans[count] = userBookLoans[i];
+                    tempUserLoans[count] = userLoans[i];
+                    tempDates[count] = returnDates[i];
                     count++;
                 }
             }
@@ -380,18 +396,19 @@
             usernames = tempUsers;
             pins = tempPins;
             admin = tempAdmin;
-            userBookLoans = tempUserBookLoans;
+            userLoans = tempUserLoans;
+            returnDates = tempDates;
 
-            if (input == currentUserIndex)
+            if (input == userIndex)
             {
-                currentUserIndex = LogIn();
+                userIndex = LogIn();
             }
 
             for (int i = 0; i < usernames.Length; i++)
             {
                 if (usernames[i] == previousUser)
                 {
-                    currentUserIndex = i;
+                    userIndex = i;
                 }
             }
         }
@@ -436,6 +453,18 @@
         }
 
 
+        static DateTime[] AddToArray(DateTime[] array)
+        {
+            DateTime[] tempArray = new DateTime[array.Length + 1];
+            for (int i = 0; i < array.Length; i++)
+            {
+                tempArray[i] = array[i];
+            }
+            tempArray[tempArray.Length - 1] = new DateTime();
+            return tempArray;
+        }
+
+
         //reusable method for input
         static int GetInputInt()
         {
@@ -452,7 +481,7 @@
         static bool IsInputCorrect(string correctAnswer)
         {
             string? input = Console.ReadLine();
-            if (input == null || input != correctAnswer)
+            if (string.IsNullOrEmpty(input) || input != correctAnswer)
             {
                 return false;
             }
