@@ -490,5 +490,17 @@
             }
             return true;
         }
+
+
+        static void SaveData()
+        {
+
+        }
+
+
+        static void LoadData()
+        {
+
+        }
     }
 }
