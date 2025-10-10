@@ -1,4 +1,6 @@
-﻿namespace LibraryProgram
+﻿using System.Linq.Expressions;
+
+namespace LibraryProgram
 {
     internal class Program
     {
@@ -185,6 +187,7 @@
                     }
                 }
                 Console.WriteLine($"{usernames[userIndex]} lånar en kopia av {books[input]}, åter {returnDate}");
+                SaveData("..\\..\\..\\data.txt");
             }
             else
             {
@@ -239,6 +242,7 @@
                 userLoans[userIndex][input] = "";
                 SortUserLoans();
             }
+            SaveData("..\\..\\..\\data.txt");
         }
 
 
@@ -354,6 +358,7 @@
             loanedBooks = AddToArray(loanedBooks);
 
             Console.WriteLine($"{bookAmount} kopior av {newBook} lades till i biblioteket.");
+            SaveData("..\\..\\..\\data.txt");
         }
 
 
@@ -397,6 +402,7 @@
             returnDates = tempDates;
 
             Console.WriteLine($"Ny användare skapad.");
+            SaveData("..\\..\\..\\data.txt");
         }
 
 
@@ -450,6 +456,8 @@
                     userIndex = i;
                 }
             }
+
+            SaveData("..\\..\\..\\data.txt");
         }
 
 
@@ -516,15 +524,26 @@
         }
 
 
-        static void SaveData()
+        static void SaveData(string savePath)
         {
-
+            if (File.Exists(savePath))
+            {
+                File.WriteAllLines(savePath, books);
+            }
+            else
+            {
+                File.Create(savePath);
+            }
         }
 
 
-        static void LoadData()
+        static void LoadData(string loadPath)
         {
-
+            if (File.Exists(loadPath))
+            {
+                string data = File.ReadAllText(loadPath);
+                Console.WriteLine(data);
+            }
         }
     }
 }
