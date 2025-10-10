@@ -75,7 +75,7 @@
         {
             int[][] tempUserLoans = new int[books.Length][];
             DateTime[][] tempDates = new DateTime[books.Length][];
-            for (int i = 0; i < userLoans.Length; i++)
+            for (int i = 0; i < arraySize; i++)
             {
                 tempUserLoans[i] = new int[arraySize];
                 tempDates[i] = new DateTime[arraySize];
@@ -346,13 +346,15 @@
             admin = AddToArray(admin, isAdmin);
             int[][] tempUserLoans = new int[userLoans.Length + 1][];
             DateTime[][] tempDates = new DateTime[returnDates.Length + 1][];
+
             for (int i = 0; i < userLoans.Length; i++)
             {
                 tempUserLoans[i] = userLoans[i];
                 tempDates[i] = returnDates[i];
             }
-            tempUserLoans[tempUserLoans.Length - 1] = new int[tempUserLoans.Length];
-            tempDates[tempDates.Length - 1] = new DateTime[tempDates.Length];
+            tempUserLoans[tempUserLoans.Length - 1] = new int[books.Length];
+            tempDates[tempDates.Length - 1] = new DateTime[books.Length];
+
             userLoans = tempUserLoans;
             returnDates = tempDates;
 
@@ -373,11 +375,12 @@
             int input = GetInputInt() - 1;
             Console.WriteLine($"Tar bort {usernames[input]} från användarlistan.");
 
-            string[] tempUsers = new string[usernames.Length - 1];
-            int[] tempPins = new int[pins.Length - 1];
-            bool[] tempAdmin = new bool[admin.Length - 1];
-            int[][] tempUserLoans = new int[userLoans.Length - 1][];
-            DateTime[][] tempDates = new DateTime[returnDates.Length - 1][];
+            int arraySize = usernames.Length - 1;
+            string[] tempUsers = new string[arraySize];
+            int[] tempPins = new int[arraySize];
+            bool[] tempAdmin = new bool[arraySize];
+            int[][] tempUserLoans = new int[arraySize][];
+            DateTime[][] tempDates = new DateTime[arraySize][];
 
             int count = 0;
             for (int i = 0; i < usernames.Length; i++)
