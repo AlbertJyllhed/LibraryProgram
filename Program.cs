@@ -24,6 +24,7 @@ namespace LibraryProgram
         {
             Console.Title = "LibraryProgram";
             SetupLibrary();
+            LoadLibraryData();
             userIndex = LogIn();
 
             while (userIndex > -1)
@@ -69,6 +70,7 @@ namespace LibraryProgram
 
                 Console.WriteLine("\nTryck Enter för att gå till huvudmenyn.");
                 Console.ReadKey();
+                SaveLibraryData();
             }
         }
 
@@ -187,7 +189,6 @@ namespace LibraryProgram
                     }
                 }
                 Console.WriteLine($"{usernames[userIndex]} lånar en kopia av {books[input]}, åter {returnDate}");
-                SaveData("..\\..\\..\\data.txt");
             }
             else
             {
@@ -242,7 +243,6 @@ namespace LibraryProgram
                 userLoans[userIndex][input] = "";
                 SortUserLoans();
             }
-            SaveData("..\\..\\..\\data.txt");
         }
 
 
@@ -358,7 +358,6 @@ namespace LibraryProgram
             loanedBooks = AddToArray(loanedBooks);
 
             Console.WriteLine($"{bookAmount} kopior av {newBook} lades till i biblioteket.");
-            SaveData("..\\..\\..\\data.txt");
         }
 
 
@@ -402,7 +401,6 @@ namespace LibraryProgram
             returnDates = tempDates;
 
             Console.WriteLine($"Ny användare skapad.");
-            SaveData("..\\..\\..\\data.txt");
         }
 
 
@@ -456,8 +454,6 @@ namespace LibraryProgram
                     userIndex = i;
                 }
             }
-
-            SaveData("..\\..\\..\\data.txt");
         }
 
 
@@ -524,25 +520,40 @@ namespace LibraryProgram
         }
 
 
-        static void SaveData(string savePath)
+        static void SaveLibraryData()
         {
-            if (File.Exists(savePath))
+            string savePath = "..\\..\\..\\LibraryData.txt";
+            string libraryData = "";
+            for (int i = 0; i < books.Length; i++)
             {
-                File.WriteAllLines(savePath, books);
+                libraryData += $"{books[i]}, {bookAmounts[i]}, {loanedBooks[i]}\n";
             }
-            else
-            {
-                File.Create(savePath);
-            }
+            File.WriteAllText(savePath, libraryData);
         }
 
 
-        static void LoadData(string loadPath)
+        static void LoadLibraryData()
         {
+            string loadPath = "..\\..\\..\\LibraryData.txt";
             if (File.Exists(loadPath))
             {
-                string data = File.ReadAllText(loadPath);
-                Console.WriteLine(data);
+                string[] libraryData = File.ReadAllLines(loadPath);
+                if (libraryData.Length == 0)
+                {
+                    return;
+                }
+
+                books = new string[libraryData.Length];
+                bookAmounts = new int[libraryData.Length];
+                loanedBooks = new int[libraryData.Length];
+
+                for (int i = 0; i < libraryData.Length; i++)
+                {
+                    string[] splitData = libraryData[i].Split(", ");
+                    books[i] = splitData[0];
+                    bookAmounts[i] = int.Parse(splitData[1]);
+                    loanedBooks[i] = int.Parse(splitData[2]);
+                }
             }
         }
     }

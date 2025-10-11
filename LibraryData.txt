@@ -1,0 +1,5 @@
+Pride and Prejudice, 6, 0
+The Great Gatsby, 8, 0
+Moby-Dick, 5, 0
+Les Miserables, 10, 1
+Frankenstein, 13, 0
