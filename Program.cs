@@ -3,19 +3,16 @@
     internal class Program
     {
         public static string[] books = ["Pride and Prejudice", "The Great Gatsby", "Moby-Dick", "Les Miserables", "Frankenstein"];
-        public static int[] bookAmounts = [6, 8, 5, 10, 13];
-        //keeps track of all the books the library has loaned out
-        public static int[] loanedBooks = new int[books.Length];
+        public static int[] bookAmounts = [6, 8, 5, 10, 13]; //keeps track of how many copies of each book there are in the library
+        public static int[] loanedBooks = new int[books.Length]; //keeps track of all the books the library has loaned out
 
         public static string[] usernames = ["Anna", "Bob", "Cecilia", "David", "Eva"];
-        public static int[] pins = [1234, 2345, 3456, 4567, 5678];
-        public static bool[] admin = [true, false, true, false, false];
-        //keeps track of all the books that the different users have in their possession
-        public static string[][] userLoans = new string[usernames.Length][];
-        public static DateTime[][] returnDates = new DateTime[usernames.Length][];
-        public static int maxLoans = 10;
-        //used to keep track of which user is currently logged in
-        public static int userIndex = -1;
+        public static int[] pins = [1234, 2345, 3456, 4567, 5678]; //login pins for each user
+        public static bool[] admin = [true, false, true, false, false]; //keeps track of whether the user is an admin or not
+        public static string[][] userLoans = new string[usernames.Length][]; //keeps track of the books that users have loaned
+        public static DateTime[][] returnDates = new DateTime[usernames.Length][]; //keeps track of when every book needs to be returned
+        public static int maxLoans = 10; //number used to set the size of every user's loan list
+        public static int userIndex = -1; //keeps track of which user is currently logged in
 
 
         static void Main(string[] args)
@@ -85,6 +82,7 @@
             Console.WriteLine("4. Lämna tillbaka bok");
             Console.WriteLine("5. Mina lån");
 
+            //if the current user is an admin they get special options
             if (admin[userIndex])
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -104,6 +102,7 @@
         }
 
 
+        //writes out every book and how many are available for rent in the console
         static void ShowBooks()
         {
             for (int i = 0; i < books.Length; i++)
@@ -114,6 +113,7 @@
         }
 
 
+        //searches the library for a specific book and writes its name in the console
         static void SearchForBook()
         {
             Console.WriteLine("Skriv en boktitel för att söka efter den.");
@@ -141,8 +141,10 @@
         }
 
 
+        //adds selected book into the user's loans list
         static void BorrowBook()
         {
+            //if loan list is full the user cannot borrow anything
             if (IsUserLoansFull())
             {
                 Console.WriteLine("Din lånelista är full.");
@@ -167,6 +169,7 @@
                 {
                     if (string.IsNullOrEmpty(userLoans[userIndex][i]))
                     {
+                        //creates return date for the book seven days in the future
                         userLoans[userIndex][i] = books[input];
                         returnDates[userIndex][i] = DateTime.Now.AddDays(7);
                         returnDate = returnDates[userIndex][i].ToLongDateString();
@@ -182,6 +185,7 @@
         }
 
 
+        //checks if the current user's loan list is full and returns a bool based on the result
         static bool IsUserLoansFull()
         {
             foreach (string book in userLoans[userIndex])
@@ -195,6 +199,7 @@
         }
 
 
+        //removes selected book from the user loans so it can be borrowed again
         static void ReturnBook()
         {
             if (!HasBorrowedBooks())
@@ -231,6 +236,7 @@
         }
 
 
+        //sorts the userLoans array so that the indexes are presented correctly
         static void SortUserLoans()
         {
             string[][] tempUserLoans = new string[userLoans.Length][];
@@ -251,6 +257,7 @@
         }
 
 
+        //checks if the user has any borrowed books and writes them out in the console
         static void CheckBorrowedBooks()
         {
             if (!HasBorrowedBooks())
@@ -289,6 +296,7 @@
         //handles logging in to the library system
         static int LogIn()
         {
+            //the user gets three tries to log in before the program exits
             int tries = 0;
             while (tries < 3)
             {
@@ -319,25 +327,30 @@
         }
 
 
+        //adds a new book into the books array based on user input
         static void AddBook()
         {
+            //first checks if the current user can access the AddBook method
             if (!admin[userIndex])
             {
                 Console.WriteLine("Du har inte tillgång till den här funktionen");
                 return;
             }
 
+            //lets the user choose a title for the new book
             Console.WriteLine("Skriv en boktitel du vill lägga till i biblioteket.");
             string? newBook = Console.ReadLine();
-            if (newBook == "" || newBook == null)
+            if (string.IsNullOrEmpty(newBook))
             {
                 Console.WriteLine("Ogiltig boktitel");
                 return;
             }
 
+            //lets the user choose how many copies of the new book should be added into the library
             Console.WriteLine($"Hur många kopior av {newBook} vill du lägga till?");
             int bookAmount = GetInputInt();
 
+            //update the relevant arrays
             books = AddToArray(books, newBook);
             bookAmounts = AddToArray(bookAmounts, bookAmount);
             loanedBooks = AddToArray(loanedBooks);
@@ -348,12 +361,15 @@
 
         static void AddUser()
         {
+            //first checks if the current user can access the AddUser method
             if (!admin[userIndex])
             {
                 Console.WriteLine("Du har inte tillgång till den här funktionen");
                 return;
             }
 
+            /*lets the user choose a username and pin
+            and if the new user is an admin or not*/
             Console.WriteLine("Skriv ett nytt användarnamn.");
             string? newUser = Console.ReadLine();
             if (newUser == null)
@@ -368,6 +384,7 @@
             Console.WriteLine("Ge användaren adminrättigheter? y/n");
             bool isAdmin = IsInputCorrect("y");
 
+            //adds a space to all the relevant arrays
             usernames = AddToArray(usernames, newUser);
             pins = AddToArray(pins, newPin);
             admin = AddToArray(admin, isAdmin);
@@ -389,9 +406,11 @@
         }
 
 
+        //removes a user from and clears all the relevant arrays related to that user
         static void RemoveUser()
         {
             string previousUser = usernames[userIndex];
+            //first the user gets to select a user to remove
             Console.WriteLine("Vilken användare vill du ta bort?");
             for (int i = 0; i < usernames.Length; i++)
             {
@@ -400,6 +419,7 @@
             int input = GetInputInt() - 1;
             Console.WriteLine($"Tar bort {usernames[input]} från användarlistan.");
 
+            //then creates temporary arrays with one less space
             int arraySize = usernames.Length - 1;
             string[] tempUsers = new string[arraySize];
             int[] tempPins = new int[arraySize];
@@ -407,6 +427,7 @@
             string[][] tempUserLoans = new string[arraySize][];
             DateTime[][] tempDates = new DateTime[arraySize][];
 
+            //saves every user except for the one chosen for removal
             int count = 0;
             for (int i = 0; i < usernames.Length; i++)
             {
@@ -421,17 +442,20 @@
                 }
             }
 
+            //lastly save all the temp arrays into the ones the program uses
             usernames = tempUsers;
             pins = tempPins;
             admin = tempAdmin;
             userLoans = tempUserLoans;
             returnDates = tempDates;
 
+            //if the current user is the one being removed, go back to the login screen
             if (input == userIndex)
             {
                 userIndex = LogIn();
             }
 
+            //ensures that the same user is logged in after the indexes change
             for (int i = 0; i < usernames.Length; i++)
             {
                 if (usernames[i] == previousUser)
@@ -481,7 +505,7 @@
         }
 
 
-        //reusable method for input
+        //reusable method for getting an int from user input
         static int GetInputInt()
         {
             int input = 0;
@@ -505,24 +529,30 @@
         }
 
 
+        //saves all book specific data to a text file
         static void SaveLibraryData()
         {
             string savePath = "..\\..\\..\\LibraryData.txt";
             string libraryData = "";
             for (int i = 0; i < books.Length; i++)
             {
+                /*continuously copies data from arrays to libraryData string
+                and goes to the next line after saving the current user's data*/
                 libraryData += $"{books[i]}, {bookAmounts[i]}, {loanedBooks[i]}\n";
             }
             File.WriteAllText(savePath, libraryData);
         }
 
 
+        //saves all user specific data to a text file
         static void SaveUserData()
         {
             string savePath = "..\\..\\..\\UserData.txt";
             string userData = "";
             for (int i = 0; i < usernames.Length; i++)
             {
+                /*continuously copies data from arrays to userData string
+                and goes to the next line after saving the current user's data*/
                 userData += $"{usernames[i]},{pins[i]},{admin[i]},";
                 for (int j = 0; j < maxLoans; j++)
                 {
@@ -539,23 +569,28 @@
         }
 
 
+        //loads books from save file and assigns them to premade arrays
         static void LoadLibraryData()
         {
             string loadPath = "..\\..\\..\\LibraryData.txt";
             if (File.Exists(loadPath))
             {
+                //reads all lines in the save file and saves them to a string
                 string[] libraryData = File.ReadAllLines(loadPath);
                 if (libraryData.Length == 0)
                 {
                     return;
                 }
 
+                //sets new lengths of relevant arrays based on data
                 books = new string[libraryData.Length];
                 bookAmounts = new int[libraryData.Length];
                 loanedBooks = new int[libraryData.Length];
 
                 for (int i = 0; i < libraryData.Length; i++)
                 {
+                    /*splits up each line in libraryData and
+                    assigns the data to different arrays*/
                     string[] splitData = libraryData[i].Split(',');
                     books[i] = splitData[0];
                     bookAmounts[i] = int.Parse(splitData[1]);
@@ -565,17 +600,20 @@
         }
 
 
+        //loads user data from save file and assigns it to premade arrays
         static void LoadUserData()
         {
             string loadPath = "..\\..\\..\\UserData.txt";
             if (File.Exists(loadPath))
             {
+                //reads all lines in the save file and saves them to a string
                 string[] userData = File.ReadAllLines(loadPath);
                 if (userData.Length == 0)
                 {
                     return;
                 }
 
+                //sets new lengths of relevant arrays based on data
                 usernames = new string[userData.Length];
                 pins = new int[userData.Length];
                 admin = new bool[userData.Length];
@@ -584,6 +622,8 @@
 
                 for (int i = 0; i < userData.Length; i++)
                 {
+                    /*splits up each line in userData and
+                    assigns the data to different arrays*/
                     string[] splitData = userData[i].Split(',');
                     usernames[i] = splitData[0];
                     pins[i] = int.Parse(splitData[1]);
