@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace LibraryProgram
+﻿namespace LibraryProgram
 {
     internal class Program
     {
@@ -23,8 +21,8 @@ namespace LibraryProgram
         static void Main(string[] args)
         {
             Console.Title = "LibraryProgram";
-            SetupLibrary();
             LoadLibraryData();
+            LoadUserData();
             userIndex = LogIn();
 
             while (userIndex > -1)
@@ -70,23 +68,10 @@ namespace LibraryProgram
 
                 Console.WriteLine("\nTryck Enter för att gå till huvudmenyn.");
                 Console.ReadKey();
+
                 SaveLibraryData();
+                SaveUserData();
             }
-        }
-
-
-        //initialize userBookLoans array and dates
-        static void SetupLibrary()
-        {
-            string[][] tempUserLoans = new string[books.Length][];
-            DateTime[][] tempDates = new DateTime[books.Length][];
-            for (int i = 0; i < usernames.Length; i++)
-            {
-                tempUserLoans[i] = new string[maxLoans];
-                tempDates[i] = new DateTime[maxLoans];
-            }
-            userLoans = tempUserLoans;
-            returnDates = tempDates;
         }
 
 
@@ -532,6 +517,28 @@ namespace LibraryProgram
         }
 
 
+        static void SaveUserData()
+        {
+            string savePath = "..\\..\\..\\UserData.txt";
+            string userData = "";
+            for (int i = 0; i < usernames.Length; i++)
+            {
+                userData += $"{usernames[i]},{pins[i]},{admin[i]},";
+                for (int j = 0; j < maxLoans; j++)
+                {
+                    userData += $"{userLoans[i][j]}_";
+                }
+                userData += ",";
+                for (int k = 0; k < maxLoans; k++)
+                {
+                    userData += $"{returnDates[i][k]}_";
+                }
+                userData += "\n";
+            }
+            File.WriteAllText(savePath, userData);
+        }
+
+
         static void LoadLibraryData()
         {
             string loadPath = "..\\..\\..\\LibraryData.txt";
@@ -549,11 +556,65 @@ namespace LibraryProgram
 
                 for (int i = 0; i < libraryData.Length; i++)
                 {
-                    string[] splitData = libraryData[i].Split(", ");
+                    string[] splitData = libraryData[i].Split(',');
                     books[i] = splitData[0];
                     bookAmounts[i] = int.Parse(splitData[1]);
                     loanedBooks[i] = int.Parse(splitData[2]);
                 }
+            }
+        }
+
+
+        static void LoadUserData()
+        {
+            string loadPath = "..\\..\\..\\UserData.txt";
+            if (File.Exists(loadPath))
+            {
+                string[] userData = File.ReadAllLines(loadPath);
+                if (userData.Length == 0)
+                {
+                    return;
+                }
+
+                usernames = new string[userData.Length];
+                pins = new int[userData.Length];
+                admin = new bool[userData.Length];
+                userLoans = new string[userData.Length][];
+                returnDates = new DateTime[userData.Length][];
+
+                for (int i = 0; i < userData.Length; i++)
+                {
+                    string[] splitData = userData[i].Split(',');
+                    usernames[i] = splitData[0];
+                    pins[i] = int.Parse(splitData[1]);
+                    admin[i] = bool.Parse(splitData[2]);
+
+                    string[] splitLoans = splitData[3].Split('_');
+                    userLoans[i] = new string[splitLoans.Length];
+                    userLoans[i] = splitLoans;
+
+                    string[] splitDates = splitData[4].Split('_');
+                    returnDates[i] = new DateTime[splitDates.Length];
+                    for (int j = 0; j < splitDates.Length; j++)
+                    {
+                        if (!string.IsNullOrEmpty(splitDates[j]))
+                        {
+                            returnDates[i][j] = DateTime.Parse(splitDates[j]);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                string[][] tempUserLoans = new string[usernames.Length][];
+                DateTime[][] tempDates = new DateTime[usernames.Length][];
+                for (int i = 0; i < usernames.Length; i++)
+                {
+                    tempUserLoans[i] = new string[maxLoans];
+                    tempDates[i] = new DateTime[maxLoans];
+                }
+                userLoans = tempUserLoans;
+                returnDates = tempDates;
             }
         }
     }
