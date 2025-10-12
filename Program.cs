@@ -359,6 +359,7 @@
         }
 
 
+        //adds a new user and updates the relevant arrays
         static void AddUser()
         {
             //first checks if the current user can access the AddUser method
