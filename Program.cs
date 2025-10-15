@@ -410,6 +410,13 @@
         //removes a user from and clears all the relevant arrays related to that user
         static void RemoveUser()
         {
+            //first checks if the current user can access the RemoveUser method
+            if (!admin[userIndex])
+            {
+                Console.WriteLine("Du har inte tillgång till den här funktionen");
+                return;
+            }
+
             string previousUser = usernames[userIndex];
             //first the user gets to select a user to remove
             Console.WriteLine("Vilken användare vill du ta bort?");
